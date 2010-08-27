@@ -23,7 +23,7 @@ module Permits
         if permit_role == :system
           # always execute system permit
           result = role_permit.permit?(user, request)
-          break if result != :continue
+          break if result == :break
         else
           # only execute the permit if the user has the role of the permit or is for any role
           role_permit.permit?(user, request) if user.has_role?(permit_role) || permit_role == :any

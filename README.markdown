@@ -50,6 +50,32 @@ _Note:_ You might consider using the Permits generator in order to generate your
   end
 </pre>
 
+## Special Permits
+
+The Permits generator always generates the special permits *Any* and *System*.
+
+### Any permit
+
+The Any permit, can be used to set permissions that should hold true for a user in any role. 
+F.ex, maybe in your app, any user should be able to read comments, articles and posts:
+
+For this to hold true, put the following permit logic in your Any permit.
+<pre>
+  can :read, [Comment, Article, Post]
+</pre>
+
+### System permit
+
+The System permit is run before any of the other permits. This gives you a chance to control the permission flow.
+By returning a value of :break you force a break-out from the permission flow, ensuring none of the other permits are run.
+
+Example:
+The system permit can be used to allow management of all resources given the request is from localhost (which usually means "in development mode"). By default this logic is setup and ready to go. 
+
+You can be enable this simply by setting the following class instance variable: 
+
+<code>Permits::Configuration.localhost_manager = true</code>
+
 ## Permits Generator
 
 Options
