@@ -2,8 +2,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "cancan-permits"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Permits for use with CanCan}
+    gem.description = %Q{Role specific Permits for use with CanCan permission system}
     gem.email = "kmandrup@gmail.com"
     gem.homepage = "http://github.com/kristianmandrup/cancan-permits"
     gem.authors = ["Kristian Mandrup"]

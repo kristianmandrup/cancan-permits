@@ -1,6 +1,6 @@
 # CanCan Permits
 
-Adds the concept of centralized Permits for use with CanCan permission system. 
+Role specific Permits for use with CanCan permission system. 
 
 ## Install
 
