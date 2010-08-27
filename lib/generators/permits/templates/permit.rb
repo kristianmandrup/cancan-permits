@@ -6,10 +6,7 @@ module Permit
 
     def permit?(user, request=nil) 
       super
-      return if !role_match? user
-
-      # can :create, Comment            
-      # owns(user, Comment)
+      <%= permit logic %>
     end  
   end
 end

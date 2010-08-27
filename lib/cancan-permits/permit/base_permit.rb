@@ -29,6 +29,10 @@ module Permit
 
     protected
 
+    def localhost_manager?
+      Permits::Configuration.localhost_manager
+    end
+
     def role_match? user
       user.has_role? self.class.last_name.downcase.to_sym
     end
