@@ -28,7 +28,17 @@ describe 'Permits generator' do
 
       it "should have created Guest and Admin permits" do
         # Find at: 'app/permits/admin_permit.rb'
-        g.should have_permits :guest, :admin
+        g.should have_permit_files :guest, :admin
+
+        g.should have_permit_file :guest do |guest_permit|
+          guest_permit.should have_licenses :user_admin, :blogging 
+        end
+
+        g.should have_license_file :licenses do |license_file|      
+          license_file.should have_module :license do |license_module|
+            license_module.should have_license_classes :user_admin, :blogging, :superclass => :base
+          end
+        end
       end
     end
   end    

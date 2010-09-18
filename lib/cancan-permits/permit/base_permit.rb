@@ -1,6 +1,15 @@
 module Permit
   class Base 
     attr_reader :ability
+
+    def self.licenses *names
+      names.to_strings.each do |name|
+        module_name = "License::#{name.camelize}"
+        clazz = module_name.constantize
+        class.new(self).enforce
+        }        
+      end
+    end
        
     def initialize(ability)
       @ability = ability

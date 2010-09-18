@@ -35,6 +35,7 @@ class PermitsGenerator < Rails::Generators::Base
     self.permit_name = name
 
     template "permit.rb", "app/permits/#{name}_permit.rb"
+    template "licenses.rb", "app/permits/licenses.rb"    
   end 
 
   def any_logic

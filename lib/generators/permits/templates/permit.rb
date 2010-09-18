@@ -7,6 +7,8 @@ module Permit
     def permit?(user, request=nil) 
       super
       <%= permit logic %>
+      
+      licenses :user_admin, :blogging
     end  
   end
 end

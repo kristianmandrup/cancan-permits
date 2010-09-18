@@ -11,7 +11,8 @@ module RolePermit
       can :read, [Comment, Post]
       can [:update, :destroy], [Comment]
       can :create, Article
-      
+   
+      licenses :user_admin, :blogging
       # owns(user, Comment)
       
       # a user can manage comments he/she created
