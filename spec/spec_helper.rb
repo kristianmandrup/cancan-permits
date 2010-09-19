@@ -9,7 +9,7 @@ RSpec.configure do |config|
   config.mock_with :mocha
 end
 
-module AuthAssistant::Roles
+module Cream::Roles
   def self.available
     User.roles
   end

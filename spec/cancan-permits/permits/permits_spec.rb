@@ -13,7 +13,7 @@ class Article
 end
 
 
-describe AuthAssistant::Ability do
+describe Cream::Ability do
   context "Guest user" do
     before :each do
       @guest = User.new(1, :guest)
@@ -50,7 +50,7 @@ describe AuthAssistant::Ability do
   context "Admin user" do
     before do
       admin = User.new(2, :admin)
-      @ability = AuthAssistant::Ability.new admin
+      @ability = Cream::Ability.new admin
     end
   # 
   #   # can :manage, :all    
