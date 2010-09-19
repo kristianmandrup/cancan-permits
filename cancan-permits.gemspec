@@ -69,21 +69,24 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, ["~> 2.0.0"])
-      s.add_runtime_dependency(%q<cancan>, ["~> 1.3"])
-      s.add_runtime_dependency(%q<require_all>, ["~> 1.1"])
-      s.add_runtime_dependency(%q<sugar-high>, ["~> 0.1"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+      s.add_runtime_dependency(%q<cancan>, ["~> 1.3.2"])
+      s.add_runtime_dependency(%q<require_all>, ["~> 1.1.0"])
+      s.add_runtime_dependency(%q<sugar-high>, ["~> 0.2.10"])
+      s.add_runtime_dependency(%q<code-spec>, ["~> 0.2.5"])
     else
-      s.add_dependency(%q<rspec>, ["~> 2.0.0"])
-      s.add_dependency(%q<cancan>, ["~> 1.3"])
-      s.add_dependency(%q<require_all>, ["~> 1.1"])
-      s.add_dependency(%q<sugar-high>, ["~> 0.1"])
+      s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+      s.add_dependency(%q<cancan>, ["~> 1.3.2"])
+      s.add_dependency(%q<require_all>, ["~> 1.1.0"])
+      s.add_dependency(%q<sugar-high>, ["~> 0.2.10"])
+      s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
     end
   else
-    s.add_dependency(%q<rspec>, ["~> 2.0.0"])
-    s.add_dependency(%q<cancan>, ["~> 1.3"])
-    s.add_dependency(%q<require_all>, ["~> 1.1"])
-    s.add_dependency(%q<sugar-high>, ["~> 0.1"])
+    s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+    s.add_dependency(%q<cancan>, ["~> 1.3.2"])
+    s.add_dependency(%q<require_all>, ["~> 1.1.0"])
+    s.add_dependency(%q<sugar-high>, ["~> 0.2.10"])
+    s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
   end
 end
 
