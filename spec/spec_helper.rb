@@ -4,6 +4,8 @@ require 'cancan-permits'
 
 require_all File.dirname(__FILE__) + '/cancan-permits/fixtures/permits'
 
+require_all File.dirname(__FILE__) + '/cancan-permits/permits/fixtures'
+
 RSpec.configure do |config|
   config.mock_with :mocha
 end

@@ -25,7 +25,7 @@ describe 'Permits generator' do
     end
 
     it "should create Admin permit" do
-      @generator.should generate_permit_file :admin
+      @generator.should generate_permit :admin
     end
   end
 

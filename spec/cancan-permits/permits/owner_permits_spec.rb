@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-# can :read, [Comment, Post]
-# can [:update, :destroy], [Comment]
-# can :create, Article
-
-
 describe Permits::Ability do
   context "Editor user" do
     before :each do

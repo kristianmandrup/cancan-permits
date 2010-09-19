@@ -1,4 +1,4 @@
-class <%= permit_name %>Permit < Permit::Base
+class <%= permit_name.to_s.camelize %>Permit < Permit::Base
   def initialize(ability)
     super
   end
