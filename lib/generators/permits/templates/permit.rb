@@ -1,14 +1,12 @@
-module Permit  
-  class <%= permit_name %> < Base
-    def initialize(ability)
-      super
-    end
-
-    def permit?(user, request=nil) 
-      super
-      <%= permit logic %>
-      
-      licenses :user_admin, :blogging
-    end  
+class <%= permit_name %>Permit < Permit::Base
+  def initialize(ability)
+    super
   end
+
+  def permit?(user, request=nil) 
+    super
+    <%= permit_logic %>
+    
+    licenses :user_admin, :blogging
+  end  
 end

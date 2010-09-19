@@ -1,4 +1,4 @@
-module AuthAssistant
+module Cream
   class Ability
     include CanCan::Ability
 
@@ -6,7 +6,12 @@ module AuthAssistant
     # so that the can and cannot operations work on the same permission collection!
     def self.role_permits ability
       @role_permits = AuthAssistant::Roles.available.inject([]) do |permits, role|
-        permits << "RolePermit::#{role.to_s.camelize}".constantize.new(ability)
+        begin
+          permit_clazz = "#{role.to_s.camelize}Permit".constantize
+          permits << permit_clazz.new(ability) if permit_clazz && permit_clazz.kind_of?(Class)
+        rescue
+          # error
+        end
       end
     end
 

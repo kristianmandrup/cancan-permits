@@ -2,12 +2,12 @@ module Permits
   class Ability
     include CanCan::Ability
 
-    # set up each RolePermit instance to share this same Ability 
+    # set up each Permit instance to share this same Ability 
     # so that the can and cannot operations work on the same permission collection!
     def self.permits ability
       special_permits << [:system, :any].map{|name| make_permit(role, ability)}
       role_permits = Permits::Roles.available.inject([]) do |permits, role|
-        permits << make_permit role, ability
+        permits << make_permit(role, ability)
       end
       special_permits + role_permits
     end
@@ -16,7 +16,7 @@ module Permits
       # put ability logic here!
       user ||= Guest.new   
                   
-      Ability.permits(self).each do |permit|
+      Permits::Ability.permits(self).each do |permit|
         # get role name of permit 
         permit_role = permit.class.demodulize.to_sym                      
         
@@ -34,7 +34,12 @@ module Permits
     protected
     
     def self.make_permit role, ability
-      "Permit::#{role.to_s.camelize}".constantize.new(ability)
+      begin
+        permit_clazz = "#{role.to_s.camelize}Permit".constantize
+        permit_clazz.new(ability) if permit_clazz && permit_clazz.kind_of?(Class)
+      rescue
+        # error      
+      end
     end          
   end
 end      

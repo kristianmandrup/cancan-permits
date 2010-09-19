@@ -17,7 +17,7 @@ describe AuthAssistant::Ability do
   context "Guest user" do
     before :each do
       @guest = User.new(1, :guest)
-      @ability = AuthAssistant::Ability.new @guest 
+      @ability = Cream::Ability.new @guest 
       @comment  = Comment.new(1)
       @post     = Post.new(1)
     end

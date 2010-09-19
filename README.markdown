@@ -34,19 +34,17 @@ By default it returns User.roles if such exists, otherwise it returns [:guest, :
 _Note:_ You might consider using the Permits generator in order to generate your permits for you (see below)
 
 <pre>
-  module RolePermit  
-    class Admin < Base
-      def initialize(ability)
-        super
-      end
-
-      def permit?(user, request=nil)    
-        super
-        return if !role_match? user
-
-        can :manage, :all    
-      end  
+  class AdminPermit < Permit::Base
+    def initialize(ability)
+      super
     end
+
+    def permit?(user, request=nil)    
+      super
+      return if !role_match? user
+
+      can :manage, :all    
+    end  
   end
 </pre>
 

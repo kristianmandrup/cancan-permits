@@ -1,6 +1,11 @@
+require 'sugar-high/module'
+
 module Permits
-  modules :ability, :roles
+  modules :roles
 end 
 
 module Permit
+end
+
+module License
 end

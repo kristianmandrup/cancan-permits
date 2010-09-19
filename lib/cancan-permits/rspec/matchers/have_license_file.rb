@@ -1,3 +1,5 @@
+require 'rails-app-spec'
+
 module RSpec::RailsApp::File
   module Matchers    
     class HaveLicenseFile

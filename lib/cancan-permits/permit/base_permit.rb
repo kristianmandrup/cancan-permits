@@ -2,12 +2,11 @@ module Permit
   class Base 
     attr_reader :ability
 
-    def self.licenses *names
+    def licenses *names
       names.to_strings.each do |name|
         module_name = "License::#{name.camelize}"
         clazz = module_name.constantize
-        class.new(self).enforce
-        }        
+        clazz.new(self).enforce!
       end
     end
        
