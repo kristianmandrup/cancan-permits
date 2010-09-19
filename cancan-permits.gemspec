@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-09-17}
+  s.date = %q{2010-09-19}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -24,17 +24,21 @@ Gem::Specification.new do |s|
      "README.markdown",
      "Rakefile",
      "VERSION",
+     "cancan-permits.gemspec",
      "lib/cancan-permits.rb",
      "lib/cancan-permits/namespaces.rb",
+     "lib/cancan-permits/permit/base_license.rb",
      "lib/cancan-permits/permit/base_permit.rb",
-     "lib/cancan-permits/permits/abiity.rb",
+     "lib/cancan-permits/permits/ability.rb",
      "lib/cancan-permits/permits/configuration.rb",
      "lib/cancan-permits/permits/roles.rb",
      "lib/cancan-permits/rspec/config.rb",
-     "lib/cancan-permits/rspec/matchers/have_permits.rb",
+     "lib/cancan-permits/rspec/matchers/have_license.rb",
+     "lib/cancan-permits/rspec/matchers/have_license_class.rb",
+     "lib/cancan-permits/rspec/matchers/have_license_file.rb",
      "lib/generators/permits/permits_generator.rb",
+     "lib/generators/permits/templates/licenses.rb",
      "lib/generators/permits/templates/permit.rb",
-     "spec/cancan-permits/fixtures/ability.rb",
      "spec/cancan-permits/fixtures/permits/admin_permit.rb",
      "spec/cancan-permits/fixtures/permits/editor_permit.rb",
      "spec/cancan-permits/fixtures/permits/guest_permit.rb",
@@ -50,8 +54,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Permits for use with CanCan}
   s.test_files = [
-    "spec/cancan-permits/fixtures/ability.rb",
-     "spec/cancan-permits/fixtures/permits/admin_permit.rb",
+    "spec/cancan-permits/fixtures/permits/admin_permit.rb",
      "spec/cancan-permits/fixtures/permits/editor_permit.rb",
      "spec/cancan-permits/fixtures/permits/guest_permit.rb",
      "spec/cancan-permits/permits/fixtures/models.rb",
