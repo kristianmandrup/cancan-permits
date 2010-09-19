@@ -3,13 +3,12 @@ require 'cancan/matchers'
 require 'cancan-permits'
 
 require_all File.dirname(__FILE__) + '/cancan-permits/fixtures/permits'
-require 'cancan-permits/fixtures/ability'
 
 RSpec.configure do |config|
   config.mock_with :mocha
 end
 
-module Cream::Roles
+module Permits::Roles
   def self.available
     User.roles
   end

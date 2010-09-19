@@ -3,10 +3,14 @@ module Permit
     attr_reader :ability
 
     def licenses *names
-      names.to_strings.each do |name|
-        module_name = "License::#{name.camelize}"
-        clazz = module_name.constantize
-        clazz.new(self).enforce!
+      names.to_strings.each do |name|         
+        begin
+          module_name = "#{name.camelize}License"
+          clazz = module_name.constantize
+          clazz.new(self).enforce!
+        rescue
+          # puts "License #{module_name} not found"
+        end
       end
     end
        
@@ -42,7 +46,7 @@ module Permit
     end
 
     def role_match? user
-      user.has_role? self.class.last_name.downcase.to_sym
+      user.has_role? self.class.last_name.gsub(/Permit$/, '').downcase.to_sym
     end
       
     def can_definitions

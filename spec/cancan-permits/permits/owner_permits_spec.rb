@@ -5,11 +5,11 @@ require 'spec_helper'
 # can :create, Article
 
 
-describe Cream::Ability do
+describe Permits::Ability do
   context "Editor user" do
     before :each do
       @editor = User.new(1, :editor, 'kristian')
-      @ability = Cream::Ability.new @editor
+      @ability = Permits::Ability.new @editor
       @comment  = Comment.new(1)
       @post     = Post.new(1)
       @article  = Article.new('kristian')      

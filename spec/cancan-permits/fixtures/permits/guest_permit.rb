@@ -4,7 +4,7 @@ class GuestPermit < Permit::Base
   end
 
   def permit?(user, request=nil) 
-    super
+    super    
     return if !role_match? user
     
     can :read, [Comment, Post]
