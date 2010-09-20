@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-09-19}
+  s.date = %q{2010-09-20}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -26,12 +26,14 @@ Gem::Specification.new do |s|
      "VERSION",
      "cancan-permits.gemspec",
      "lib/cancan-permits.rb",
+     "lib/cancan-permits/main.rb",
      "lib/cancan-permits/namespaces.rb",
      "lib/cancan-permits/permit/base_license.rb",
      "lib/cancan-permits/permit/base_permit.rb",
      "lib/cancan-permits/permits/ability.rb",
      "lib/cancan-permits/permits/configuration.rb",
      "lib/cancan-permits/permits/roles.rb",
+     "lib/cancan-permits/rspec.rb",
      "lib/cancan-permits/rspec/config.rb",
      "lib/cancan-permits/rspec/matchers/have_license.rb",
      "lib/cancan-permits/rspec/matchers/have_license_class.rb",
@@ -70,26 +72,26 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+      s.add_development_dependency(%q<code-spec>, ["~> 0.2.5"])
+      s.add_development_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
       s.add_runtime_dependency(%q<cancan>, ["~> 1.3.2"])
       s.add_runtime_dependency(%q<require_all>, ["~> 1.1.0"])
       s.add_runtime_dependency(%q<sugar-high>, ["~> 0.2.10"])
-      s.add_runtime_dependency(%q<code-spec>, ["~> 0.2.5"])
-      s.add_runtime_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
     else
       s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+      s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
+      s.add_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
       s.add_dependency(%q<cancan>, ["~> 1.3.2"])
       s.add_dependency(%q<require_all>, ["~> 1.1.0"])
       s.add_dependency(%q<sugar-high>, ["~> 0.2.10"])
-      s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
-      s.add_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
     end
   else
     s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
+    s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
+    s.add_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
     s.add_dependency(%q<cancan>, ["~> 1.3.2"])
     s.add_dependency(%q<require_all>, ["~> 1.1.0"])
     s.add_dependency(%q<sugar-high>, ["~> 0.2.10"])
-    s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
-    s.add_dependency(%q<rails-app-spec>, ["~> 0.2.10"])
   end
 end
 
