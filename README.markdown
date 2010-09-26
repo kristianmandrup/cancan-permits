@@ -1,6 +1,6 @@
 # CanCan Permits
 
-Role specific Permits for use with CanCan permission system. 
+Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system. 
 
 ## Install
 
@@ -13,7 +13,7 @@ Role specific Permits for use with CanCan permission system.
 * Define a Permit for each Role. 
 * For each Permit, define what that Role can do
 
-To add Roles to your app, you might consider using a *roles* gem such as *roles_generic*
+To add Roles to your app, you might consider using a *roles* gem such as [Roles Generic](http://github.com/kristianmandrup/roles_generic) or any of the ORM specific variants.
 
 ### Define which Roles are available
 
