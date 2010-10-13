@@ -1,4 +1,4 @@
-require 'mongoid/spec_helper'
+require 'data_mapper/spec_helper'
 
 describe Permits::Ability do
   context "Editor user" do
@@ -23,7 +23,7 @@ describe Permits::Ability do
       it "should be able to :update Comment he owns" do
         @ability.should be_able_to(:update, @own_comment)      
       end
-
+      
       it "should NOT be able to :update Comment he does NOT own" do
         @ability.should_not be_able_to(:update, @other_comment)      
       end
@@ -41,9 +41,9 @@ describe Permits::Ability do
       before :each do                  
         @editor         = User.create(:name => "Kristian", :role => "editor")
         @other_guy      = User.create(:name => "Random dude", :role => "admin")
-
-        @ability        = Permits::Ability.new(@editor, :strategy => :mongo)
-
+    
+        @ability        = Permits::Ability.new(@editor, :strategy => :orm)
+    
         @own_post       = Post.create(:writer => @editor.id)
         @other_post     = Post.create(:writer => @other_guy.id)      
       end      
@@ -52,11 +52,11 @@ describe Permits::Ability do
         @ability.should be_able_to(:read, Post)
         @ability.should be_able_to(:read, @own_post)      
       end
-
+    
       it "should be able to :update Post he owns" do
         @ability.should be_able_to(:update, @own_post)      
       end
-
+    
       it "should NOT be able to :update Post he does NOT own" do
         @ability.should_not be_able_to(:update, @other_post)      
       end

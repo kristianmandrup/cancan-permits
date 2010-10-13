@@ -1,5 +1,5 @@
 require 'rspec/core' 
-require 'mongoid'
+require 'mongo_mapper'
 require 'cancan/matchers'
 require 'cancan-permits'
 require 'cancan-permits/rspec'
@@ -18,10 +18,10 @@ module Permits::Roles
 end
 
 class User
-  include Mongoid::Document
+  include MongoMapper::Document
   
-  field :role, :type => String
-  field :name, :type => String  
+  key :role, String
+  key :name, String  
 
   def self.roles
     [:guest, :admin, :editor]
@@ -33,22 +33,24 @@ class User
 end
 
                  
-Mongoid.configure.master = Mongo::Connection.new.db('cancan_permits')
+MongoMapper.database = 'cancan-permits_mongo_mapper'
 
 module Database
-  def self.teardown     
-    Mongoid.database.collections.each do |coll|
-      coll.remove
-    end
+  def self.teardown
+    # MongoMapper.database.collections.each {|collection| collection.drop }    
+    MongoMapper.database.collections.each do |coll|
+      coll.drop unless coll.name =~ /(.*\.)?system\..*/
+    end    
   end
 end
+
 
 RSpec.configure do |config|
   config.mock_with :mocha
   config.before do
-    Mongoid.database.collections.each do |coll|
-      coll.remove
-    end
+    MongoMapper.database.collections.each do |coll|
+      coll.drop unless coll.name =~ /(.*\.)?system\..*/
+    end    
   end
 end
 

@@ -43,21 +43,8 @@ module Permit
       # puts "Using strategy: #{strategy_used}"
       begin
         case strategy_used
-        when :mongoid   
-          # puts "Ownership with mongoid for class: #{clazz}"
-          # can :manage, clazz, ownership_relation => user_id
-          can :manage, clazz do |obj|  
-            # puts "obj: #{obj.inspect}"
-            # puts "ownership relation: #{ownership_relation}"          
-            # rel = obj.send ownership_relation
-            # 
-            # puts "related obj: #{rel.inspect}"
-            # puts "user_id: #{user_id_attribute.inspect}"
-            # puts "user.user_id: #{user.send(user_id_attribute).inspect}"
-            # puts user.send(user_id_attribute).to_s
-            #           
-            obj.send(ownership_relation) == user.send(user_id_attribute).to_s
-          end
+        when :orm   
+          can :manage, clazz, ownership_relation => user_id.to_s
         when :default      
           # puts "Basic CanCan ownership"
           can :manage, clazz, ownership_relation => user_id
