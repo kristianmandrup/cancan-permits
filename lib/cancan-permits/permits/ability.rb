@@ -17,11 +17,13 @@ module Permits
     def initialize(user, request=nil)
       # put ability logic here!
       user ||= Guest.new   
-                  
-      Permits::Ability.permits(self).each do |permit|
+
+      all_permits = Permits::Ability.permits(self)
+      puts "Trying permits: #{all_permits.inspect}"
+      all_permits.each do |permit|
         # get role name of permit 
         permit_role = permit.class.demodulize.gsub(/Permit$/, '').underscore.to_sym
-        
+
         if permit_role == :system
           # always execute system permit
           result = permit.permit?(user, request)
@@ -32,7 +34,7 @@ module Permits
             puts "user: #{user} of #{permit_role} has permit?"
             puts "permit: #{permit.inspect}"
             permit.permit?(user, request) 
-          # else
+            # else
             # puts "Permit #{permit} not used for role #{permit_role}"
           end
         end
