@@ -1,9 +1,9 @@
 class AdminPermit < Permit::Base
-  def initialize(ability)
+  def initialize(ability, options = {})
     super
   end
 
-  def permit?(user, request=nil)    
+  def permit?(user, options = {})    
     super
     return if !role_match? user
     

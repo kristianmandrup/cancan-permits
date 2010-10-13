@@ -1,18 +1,18 @@
 class GuestPermit < Permit::Base
-  def initialize(ability)
+  def initialize(ability, options = {})
     super
   end
 
-  def permit?(user, request=nil) 
+  def permit?(user, options = {}) 
     super    
     return if !role_match? user
     
     can :read, [Comment, Post]
-    can [:update, :destroy], [Comment]
     can :create, Article
  
-    licenses :user_admin, :blogging
-    # owns(user, Comment)
+    # licenses :user_admin, :blogging
+    
+    owns(user, Comment)
     
     # a user can manage comments he/she created
     # can :manage, Comment do |comment|

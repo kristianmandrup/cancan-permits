@@ -11,7 +11,7 @@ begin
     gem.add_development_dependency 'code-spec',       "~> 0.2.5"
     gem.add_development_dependency 'rails-app-spec',  "~> 0.2.14"
 
-    gem.add_dependency 'cancan',          "~> 1.3.2"
+    gem.add_dependency 'cancan',          "~> 1.4.0"
     gem.add_dependency 'require_all',     "~> 1.2.0"
     gem.add_dependency 'sugar-high',      "~> 0.2.10"
   end

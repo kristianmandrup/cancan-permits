@@ -15,10 +15,15 @@ require 'mongoid/spec_helper'
 describe Permits::Ability do
   context "Guest user" do
     before :each do
-      @guest    = User.new(1, :guest)
-      @ability  = Permits::Ability.new @guest 
-      @comment  = Comment.new(1)
-      @post     = Post.new(1)
+      @guest   = User.create(:name => "Kristian", :role => "guest")
+
+      @ability  = Permits::Ability.new(@guest)
+
+      @comment  = Comment.create(:user_id => @guest.id)
+
+      @post     = Post.create(:writer => @guest.id)
+
+      @article  = Article.create(:author => @guest.id)
     end
 
     # can :read, [Comment, Post]
@@ -48,8 +53,8 @@ describe Permits::Ability do
   
   context "Admin user" do
     before do
-      admin = User.new(2, :admin)
-      @ability = Permits::Ability.new admin
+      @admin = User.create(:role => 'admin')
+      @ability = Permits::Ability.new(@admin)
     end
   # 
   #   # can :manage, :all    
