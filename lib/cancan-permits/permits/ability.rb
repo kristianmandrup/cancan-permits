@@ -44,6 +44,7 @@ module Permits
     def self.make_permit role, ability
       begin            
         clazz_name = "#{role.to_s.camelize}Permit"
+        puts "Attempting to load #{clazz_name} permition class"
         permit_clazz = clazz_name.constantize
         permit_clazz.new(ability) if permit_clazz && permit_clazz.kind_of?(Class)
       rescue
