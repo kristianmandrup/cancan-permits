@@ -1,7 +1,7 @@
 module Permits::Roles
   def self.available
     if Module.const_defined? :User
-      User.roles if User.respond_to? :roles
+      User.ROLES if User.respond_to? :ROLES
     else
       [:guest, :admin]
     end
