@@ -29,7 +29,8 @@ module Permits
         else
           # only execute the permit if the user has the role of the permit or is for any role
           if user.has_role?(permit_role) || permit_role == :any
-            # puts "user: #{user} of #{permit_role} has permit?"
+            puts "user: #{user} of #{permit_role} has permit?"
+            puts "permit: #{permit.inspect}"
             permit.permit?(user, request) 
           # else
             # puts "Permit #{permit} not used for role #{permit_role}"
