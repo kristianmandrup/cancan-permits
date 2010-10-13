@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
@@ -47,7 +47,15 @@ Gem::Specification.new do |s|
      "spec/cancan-permits/permits/fixtures/models.rb",
      "spec/cancan-permits/permits/owner_permits_spec.rb",
      "spec/cancan-permits/permits/permits_spec.rb",
+     "spec/data_mapper/models/all_models.rb",
+     "spec/data_mapper/owner_permits_spec.rb",
+     "spec/data_mapper/permits_spec.rb",
+     "spec/data_mapper/spec_helper.rb",
      "spec/generators/permit_generator_spec.rb",
+     "spec/mongo_mapper/models/all_models.rb",
+     "spec/mongo_mapper/owner_permits_spec.rb",
+     "spec/mongo_mapper/permits_spec.rb",
+     "spec/mongo_mapper/spec_helper.rb",
      "spec/mongoid/models/all_models.rb",
      "spec/mongoid/owner_permits_spec.rb",
      "spec/mongoid/permits_spec.rb",
@@ -66,7 +74,15 @@ Gem::Specification.new do |s|
      "spec/cancan-permits/permits/fixtures/models.rb",
      "spec/cancan-permits/permits/owner_permits_spec.rb",
      "spec/cancan-permits/permits/permits_spec.rb",
+     "spec/data_mapper/models/all_models.rb",
+     "spec/data_mapper/owner_permits_spec.rb",
+     "spec/data_mapper/permits_spec.rb",
+     "spec/data_mapper/spec_helper.rb",
      "spec/generators/permit_generator_spec.rb",
+     "spec/mongo_mapper/models/all_models.rb",
+     "spec/mongo_mapper/owner_permits_spec.rb",
+     "spec/mongo_mapper/permits_spec.rb",
+     "spec/mongo_mapper/spec_helper.rb",
      "spec/mongoid/models/all_models.rb",
      "spec/mongoid/owner_permits_spec.rb",
      "spec/mongoid/permits_spec.rb",
