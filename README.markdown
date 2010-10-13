@@ -1,6 +1,15 @@
 # CanCan Permits
 
-Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system. 
+Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
+
+## Update Oct 13
+
+Now updated to support multiple ownership startegies so that alternative ORMs can be supported. Demonstrates how to use it with Mongoid, including specs to prove it!
+Special thanks to Sam (yoda) for this inspiration and help in this regard :)
+
+The generator has also been updated slightly to support this new strategy as of version 0.2.1. 
+In general, the new Permits API now uses an options hash to replace the old optional request parameter. 
+This design allows for better extensibility in the future if needed. 
 
 ## Install
 
@@ -35,11 +44,11 @@ _Note:_ You might consider using the Permits generator in order to generate your
 
 <pre>
   class AdminPermit < Permit::Base
-    def initialize(ability)
+    def initialize(ability, options = {})
       super
     end
 
-    def permit?(user, request=nil)    
+    def permit?(user, options = {})    
       super
       return if !role_match? user
 

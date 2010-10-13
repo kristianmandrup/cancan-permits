@@ -1,9 +1,9 @@
 class <%= permit_name.to_s.camelize %>Permit < Permit::Base
-  def initialize(ability)
+  def initialize(ability, options = {})
     super
   end
 
-  def permit?(user, request=nil) 
+  def permit?(user, options = {}) 
     super
     <%= permit_logic %>    
     licenses :user_admin, :blogging
