@@ -2,14 +2,17 @@
 
 Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
 
-## Update Oct 13
+## Update Oct 14
 
-Now updated to support multiple ownership startegies so that alternative ORMs can be supported. 
+Now updated to support multiple ownership startegies so that alternative ORMs can be supported.  
 This gem now includes specs that demonstrate how to configure it for use with Active Record, Data Mapper, Mongoid, Mongo Mapper 
 Special thanks to Sam (yoda) for the initial inspiration and work to ensure support for Mongoid  :)
 
-The generator has also been updated slightly to support this new strategy option as of version 0.2.1. 
-In general, the new Permits API now uses an options hash to replace the old optional request parameter. 
+The built in ownership strategies are :default and :string. The default strategy can be used for generic models and Active Record, where there is no need of 
+type conversion. For some ORMs, like fx Mongoid, there is a need to convert the key (BSON Identifier) to a string for the "comparison" to work, hence the strategy is named :string. 
+
+The Permits generator has also been updated slightly to support this new strategy option as of version 0.2.1. 
+In general, the new Permits API now uses an options hash to replace the previous optional request parameter. 
 This design allows for better extensibility in the future if needed. 
 
 ## Install
@@ -83,6 +86,48 @@ The system permit can be used to allow management of all resources given the req
 You can be enable this simply by setting the following class instance variable: 
 
 <code>Permits::Configuration.localhost_manager = true</code>
+
+### Licenses
+
+Permits also supports creation more fine-grained permits through the use of Licenses.  
+Licenses are a way to group logical fragments of permission statements to be reused across multiple permits.
+The generator will create a licenses.rb file in the permits folder where you can put your licenses. For more complex scenarios, you might want to have a separate
+licenses subfolder where you put your license files.
+
+License example:
+<pre>
+  class BloggingLicense < License::Base
+    def initialize name
+      super
+    end
+
+    def enforce!
+      can(:read, Blog)
+      can(:create, Post)
+      owns(user, Post)
+    end
+  end  
+</pre>
+
+Usage example:
+
+<pre>
+  class GuestPermit < Permit::Base
+    def initialize(ability, options = {})
+      super
+    end
+
+    def permit?(user, options = {}) 
+      super    
+      return if !role_match? user
+
+      licenses :user_admin, :blogging
+    end
+  end
+end
+</pre>
+
+By convention the permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and call enforce! on each license.
 
 ## Permits Generator
 
