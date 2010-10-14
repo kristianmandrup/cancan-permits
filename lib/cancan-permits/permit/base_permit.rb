@@ -17,7 +17,7 @@ module Permit
        
     def initialize ability, options = {}
       @ability  = ability
-      @strategy = options[:strategy] || :default      
+      @strategy = options[:strategy] || Permits::Ability.strategy || :default      
     end
 
     def permit?(user, options = {}) 

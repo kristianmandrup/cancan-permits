@@ -2,6 +2,20 @@ module Permits
   class Ability
     include CanCan::Ability
 
+     class << self
+       attr_accessor :orm, :strategy
+       
+       def orm= orm
+         @orm = orm 
+         case orm
+         when :active_record, :generic
+           @strategy = :default
+         else
+           @strategy = :string
+         end
+       end
+     end
+
     # set up each Permit instance to share this same Ability 
     # so that the can and cannot operations work on the same permission collection!
     def self.permits ability, options = {}
