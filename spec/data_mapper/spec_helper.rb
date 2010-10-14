@@ -20,7 +20,7 @@ RSpec.configure do |config|
 end
 
 
-require_all File.dirname(__FILE__) + '/../cancan-permits/fixtures/permits'
+require_all File.dirname(__FILE__) + '/../generic/fixtures/permits'
 require_all File.dirname(__FILE__) + '/models/all_models'
 
 RSpec.configure do |config|

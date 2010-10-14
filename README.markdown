@@ -5,7 +5,7 @@ Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) perm
 ## Update Oct 13
 
 Now updated to support multiple ownership startegies so that alternative ORMs can be supported. 
-This gem now includes specs that demonstrate how to configure it for use with Mongoid, Mongo Mapper and Data Mapper! 
+This gem now includes specs that demonstrate how to configure it for use with Active Record, Data Mapper, Mongoid, Mongo Mapper 
 Special thanks to Sam (yoda) for the initial inspiration and work to ensure support for Mongoid  :)
 
 The generator has also been updated slightly to support this new strategy option as of version 0.2.1. 
