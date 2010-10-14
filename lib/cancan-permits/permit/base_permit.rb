@@ -43,10 +43,9 @@ module Permit
       # puts "Using strategy: #{strategy_used}"
       begin
         case strategy_used
-        when :orm   
+        when :string
           can :manage, clazz, ownership_relation => user_id.to_s
-        when :default      
-          # puts "Basic CanCan ownership"
+        when :default
           can :manage, clazz, ownership_relation => user_id
         else
           raise "Trying to use unknown ownership strategy: #{strategy}"

@@ -7,7 +7,7 @@ describe Permits::Ability do
         @editor         = User.create(:name => "Kristian", :role => "editor")
         @other_guy      = User.create(:name => "Random dude", :role => "admin")
 
-        @ability        = Permits::Ability.new(@editor, :strategy => :orm)
+        @ability        = Permits::Ability.new(@editor, :strategy => :string)
 
         @own_comment    = Comment.create(:user_id => @editor.id)
         @other_comment  = Comment.create(:user_id => @other_guy.id)      
@@ -42,7 +42,7 @@ describe Permits::Ability do
         @editor         = User.create(:name => "Kristian", :role => "editor")
         @other_guy      = User.create(:name => "Random dude", :role => "admin")
 
-        @ability        = Permits::Ability.new(@editor, :strategy => :mongo)
+        @ability        = Permits::Ability.new(@editor, :strategy => :string)
 
         @own_post       = Post.create(:writer => @editor.id)
         @other_post     = Post.create(:writer => @other_guy.id)      

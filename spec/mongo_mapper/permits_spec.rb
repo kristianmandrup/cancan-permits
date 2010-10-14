@@ -5,7 +5,7 @@ describe Permits::Ability do
     before :each do
       @guest    = User.create(:name => "Kristian", :role => "guest")
 
-      @ability  = Permits::Ability.new(@guest, :strategy => :orm)
+      @ability  = Permits::Ability.new(@guest, :strategy => :string)
 
       @comment  = Comment.create(:user_id => @guest.id)
 

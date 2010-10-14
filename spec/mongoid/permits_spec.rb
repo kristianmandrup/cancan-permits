@@ -5,7 +5,7 @@ describe Permits::Ability do
     before :each do
       @guest   = User.create(:name => "Kristian", :role => "guest")
 
-      @ability  = Permits::Ability.new(@guest, :strategy => :orm)
+      @ability  = Permits::Ability.new(@guest, :strategy => :string)
 
       @comment  = Comment.create(:user_id => @guest.id)
 
@@ -37,7 +37,7 @@ describe Permits::Ability do
   context "Admin user" do
     before do
       @admin = User.create(:role => 'admin')
-      @ability = Permits::Ability.new(@admin)
+      @ability = Permits::Ability.new(@admin, :strategy => :string)
     end
 
     it "should be able to :read anything" do
