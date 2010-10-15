@@ -20,7 +20,7 @@ module Permits
 
     def initialize user, options = {}
       # put ability logic here!
-      user ||= Guest.new   
+      # user ||= Guest.new   
 
       all_permits = Permits::Ability.permits(self, options)
       # puts "Trying permits: #{all_permits.inspect}"
