@@ -52,11 +52,11 @@ module Permits
     def self.make_permit role, ability, options = {}
       begin            
         clazz_name = "#{role.to_s.camelize}Permit"
-        # puts "Attempting to load #{clazz_name} permition class"
+        puts "Attempting to load #{clazz_name} permition class"
         permit_clazz = clazz_name.constantize
         permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
       rescue
-        # puts "permit class not found: #{clazz_name}"
+        puts "permit class not found: #{clazz_name}"
         nil
       end
     end          
