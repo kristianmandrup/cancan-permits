@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.2.3"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-10-14}
+  s.date = %q{2010-10-15}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -55,13 +55,14 @@ Gem::Specification.new do |s|
      "spec/data_mapper/owner_permits_spec.rb",
      "spec/data_mapper/permits_spec.rb",
      "spec/data_mapper/spec_helper.rb",
+     "spec/fixtures/permits/admin_permit.rb",
+     "spec/fixtures/permits/editor_permit.rb",
+     "spec/fixtures/permits/guest_permit.rb",
      "spec/generators/permit_generator_spec.rb",
-     "spec/generic/fixtures/permits/admin_permit.rb",
-     "spec/generic/fixtures/permits/editor_permit.rb",
-     "spec/generic/fixtures/permits/guest_permit.rb",
-     "spec/generic/permits/fixtures/models.rb",
-     "spec/generic/permits/owner_permits_spec.rb",
-     "spec/generic/permits/permits_spec.rb",
+     "spec/generic/models/all_models.rb",
+     "spec/generic/owner_permits_spec.rb",
+     "spec/generic/permits_spec.rb",
+     "spec/generic/spec_helper.rb",
      "spec/mongo_mapper/models/all_models.rb",
      "spec/mongo_mapper/owner_permits_spec.rb",
      "spec/mongo_mapper/permits_spec.rb",
@@ -90,13 +91,14 @@ Gem::Specification.new do |s|
      "spec/data_mapper/owner_permits_spec.rb",
      "spec/data_mapper/permits_spec.rb",
      "spec/data_mapper/spec_helper.rb",
+     "spec/fixtures/permits/admin_permit.rb",
+     "spec/fixtures/permits/editor_permit.rb",
+     "spec/fixtures/permits/guest_permit.rb",
      "spec/generators/permit_generator_spec.rb",
-     "spec/generic/fixtures/permits/admin_permit.rb",
-     "spec/generic/fixtures/permits/editor_permit.rb",
-     "spec/generic/fixtures/permits/guest_permit.rb",
-     "spec/generic/permits/fixtures/models.rb",
-     "spec/generic/permits/owner_permits_spec.rb",
-     "spec/generic/permits/permits_spec.rb",
+     "spec/generic/models/all_models.rb",
+     "spec/generic/owner_permits_spec.rb",
+     "spec/generic/permits_spec.rb",
+     "spec/generic/spec_helper.rb",
      "spec/mongo_mapper/models/all_models.rb",
      "spec/mongo_mapper/owner_permits_spec.rb",
      "spec/mongo_mapper/permits_spec.rb",
