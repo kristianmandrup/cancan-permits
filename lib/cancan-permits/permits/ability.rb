@@ -55,8 +55,9 @@ module Permits
         puts "Attempting to load #{clazz_name} permition class"
         permit_clazz = clazz_name.constantize
         permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
-      rescue
+      rescue Exception => e
         puts "permit class not found: #{clazz_name}"
+        puts "#{e.message}"
         nil
       end
     end          
