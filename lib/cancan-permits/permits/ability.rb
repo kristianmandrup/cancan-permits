@@ -7,14 +7,14 @@ module Permits
     def self.permits ability, options = {}
       special_permits = []
       special_permits << [:system, :any].map{|role| make_permit(role, ability, options)}
-      puts "Available roles: #{Permits::Roles.available}"
+      #puts "Available roles: #{Permits::Roles.available}"
       role_permits = []
       role_permits = Permits::Roles.available.inject([]) do |permits, role|
         permit = make_permit(role, ability, options)
-        puts "made permit: #{permit}"
+        #puts "made permit: #{permit}"
         permits << permit if permit
       end
-      puts "role_permits: #{role_permits.inspect}"      
+      #puts "role_permits: #{role_permits.inspect}"      
       (special_permits + role_permits).flatten.compact
     end
 
@@ -52,12 +52,12 @@ module Permits
     def self.make_permit role, ability, options = {}
       begin            
         clazz_name = "#{role.to_s.camelize}Permit"
-        puts "Attempting to load #{clazz_name} permition class"
+        #puts "Attempting to load #{clazz_name} permition class"
         permit_clazz = clazz_name.constantize
         permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
       rescue Exception => e
-        puts "permit class not found: #{clazz_name}"
-        puts "#{e.message}"
+        #puts "permit class not found: #{clazz_name}"
+        #puts "#{e.message}"
         nil
       end
     end          
