@@ -8,6 +8,7 @@ module Permits
       special_permits = []
       special_permits << [:system, :any].map{|role| make_permit(role, ability, options)}
       # puts "Available roles: #{Permits::Roles.available}"
+      role_permits = []
       role_permits = Permits::Roles.available.inject([]) do |permits, role|
         permit = make_permit(role, ability, options)
         # puts "made permit: #{permit}"
