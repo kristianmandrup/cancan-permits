@@ -7,14 +7,14 @@ module Permits
     def self.permits ability, options = {}
       special_permits = []
       special_permits << [:system, :any].map{|role| make_permit(role, ability, options)}
-      # puts "Available roles: #{Permits::Roles.available}"
+      puts "Available roles: #{Permits::Roles.available}"
       role_permits = []
       role_permits = Permits::Roles.available.inject([]) do |permits, role|
         permit = make_permit(role, ability, options)
         # puts "made permit: #{permit}"
         permits << permit if permit
       end
-      # puts "role_permits: #{role_permits.inspect}"      
+      puts "role_permits: #{role_permits.inspect}"      
       (special_permits + role_permits).flatten.compact
     end
 
