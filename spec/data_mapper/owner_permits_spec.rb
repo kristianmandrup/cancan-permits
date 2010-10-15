@@ -1,5 +1,7 @@
 require 'data_mapper/spec_helper'
 
+Permits::Ability.orm = :data_mapper
+
 describe Permits::Ability do
   context "Editor user" do
     context "using default :user_id relation - foreign key to User.id" do   
@@ -7,7 +9,7 @@ describe Permits::Ability do
         @editor         = User.create(:name => "Kristian", :role => "editor")
         @other_guy      = User.create(:name => "Random dude", :role => "admin")
 
-        @ability        = Permits::Ability.new(@editor, :strategy => :string)
+        @ability        = Permits::Ability.new(@editor)
 
         @own_comment    = Comment.create(:user_id => @editor.id)
         @other_comment  = Comment.create(:user_id => @other_guy.id)      

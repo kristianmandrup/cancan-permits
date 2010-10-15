@@ -1,4 +1,4 @@
-require 'rspec/core'
+require 'spec_helper'
 
 require 'rails'
 require 'active_record'
@@ -7,10 +7,6 @@ require 'meta_where'
 require 'yaml'
 require 'logger'
 require 'database_cleaner'
-
-require 'cancan/matchers'
-require 'cancan-permits'
-require 'cancan-permits/rspec'
 
 module Rails
   def self.config_root_dir
@@ -60,7 +56,6 @@ RSpec.configure do |config|
   end  
 end
 
-require_all File.dirname(__FILE__) + '/../generic/fixtures/permits'
 require_all File.dirname(__FILE__) + '/models/all_models'
 
 module Permits::Roles

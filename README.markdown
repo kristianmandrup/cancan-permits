@@ -142,7 +142,7 @@ Alternatively set it for the Ability instance for more fine grained control
   ability = Permits::Ability.new(@editor, :strategy => :string)  
 </pre>
 
-The ORMs currently supported (and tested) are:- :active_record, :data_mapper, :mongoid, :mongo_mapper
+The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
 
 ## Permits Generator
 
