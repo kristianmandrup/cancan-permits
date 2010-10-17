@@ -10,7 +10,7 @@ module Permit
           clazz = module_name.constantize
           clazz.new(self).enforce!
         rescue
-          # puts "License #{module_name} not found"
+          raise "License #{module_name} not found"
         end
       end
     end

@@ -12,7 +12,9 @@ RSpec::Generator.configure do |config|
 end
 
 
-describe 'Permits generator' do
+describe 'Permits generator' do   
+  use_helpers :controller, :special, :file
+    
   setup_generator :permits do
     tests PermitsGenerator
   end
@@ -20,20 +22,29 @@ describe 'Permits generator' do
   describe 'result of running generator with default profile' do
     before :each do
       @generator = with_generator do |g|    
-        g.run_generator
+        arguments = "--orm mongoid".args
+        g.run_generator arguments
       end
     end
-
-    it "should create Admin permit" do
-      @generator.should generate_permit :admin
+    
+    describe 'result of running Permits generator' do
+      it "should create Admin permit" do
+        @generator.should generate_permit :admin
+      end    
+    
+      it "should generate a permits initializer file with orm set to mongoid" do      
+        File.read(initializer_file(:permits)).should match /Permits::Application.orm = mongoid/
+      end      
     end
   end
+
+  # TODO
 
   # describe 'result of running generator with option to create permit for each registered role' do
   #   context "Registered roles :guest, :admin"
   #     before :each do
   #       with_generator do |g|    
-  #         g.run_generator "--roles admin guest"
+  #         g.run_generator "--roles admin editor"
   #       end
   #     end
   # 

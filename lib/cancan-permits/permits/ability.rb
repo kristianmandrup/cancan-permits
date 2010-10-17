@@ -35,8 +35,6 @@ module Permits
       all_permits.each do |permit|
         # get role name of permit 
         permit_role = permit.class.demodulize.gsub(/Permit$/, '').underscore.to_sym
-
-        # puts "Permit role: #{permit_role.inspect}"
         if permit_role == :system
           # always execute system permit
           result = permit.permit?(user, options)
@@ -58,7 +56,7 @@ module Permits
         permit_clazz = clazz_name.constantize
         permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
       rescue
-        nil
+        raise "Permit #{clazz_name} not found"
       end
     end          
   end
