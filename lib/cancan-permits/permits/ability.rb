@@ -1,3 +1,5 @@
+require 'cancan-permits/permit/util'
+
 module Permits
   class Ability
     include CanCan::Ability
@@ -34,7 +36,7 @@ module Permits
       all_permits = Permits::Ability.permits(self, options)
       all_permits.each do |permit|
         # get role name of permit 
-        permit_role = permit.class.demodulize.gsub(/Permit$/, '').underscore.to_sym
+        permit_role = permit_name(permit.class)
         if permit_role == :system
           # always execute system permit
           result = permit.permit?(user, options)
@@ -49,6 +51,8 @@ module Permits
     end      
     
     protected
+
+    include Permit::Util
     
     def self.make_permit role, ability, options = {}
       begin            

@@ -1,3 +1,5 @@
+require 'cancan-permits/permit/util'
+
 module Permit
   class Base 
     attr_reader :ability
@@ -55,14 +57,16 @@ module Permit
       end
     end 
 
-    protected
+    protected  
+    
+    include Permit::Util
 
     def localhost_manager?
       Permits::Configuration.localhost_manager
     end
 
     def role_match? user
-      user.has_role? self.class.last_name.gsub(/Permit$/, '').downcase.to_sym
+      user.has_role? permit_name(self.class)
     end
       
     def can_definitions

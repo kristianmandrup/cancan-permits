@@ -16,7 +16,7 @@ class User
   attr_accessor :id, :role, :name
 
   def self.roles
-    [:guest, :admin, :editor]
+    [:guest, :admin, :editor, :super_admin]
   end    
 
   def initialize id, role, name = nil
