@@ -1,17 +1,4 @@
-require 'spec_helper'
-
-class Comment
-  attr_accessor :owner
-end
-
-class Post
-  attr_accessor :writer  
-end
-
-class Article
-  attr_accessor :author
-end
-
+require 'generic/spec_helper'
 
 describe Permits::Ability do
   context "Guest user" do

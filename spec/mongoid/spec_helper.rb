@@ -1,10 +1,6 @@
-require 'rspec/core' 
+require 'spec_helper' 
 require 'mongoid'
-require 'cancan/matchers'
-require 'cancan-permits'
-require 'cancan-permits/rspec'
 
-require_all File.dirname(__FILE__) + '/../generic/fixtures/permits'
 require_all File.dirname(__FILE__) + '/models/all_models'
 
 RSpec.configure do |config|

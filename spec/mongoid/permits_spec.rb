@@ -1,5 +1,7 @@
 require 'mongoid/spec_helper'
 
+Permits::Ability.orm = :mongoid
+
 describe Permits::Ability do
   context "Guest user" do
     before :each do

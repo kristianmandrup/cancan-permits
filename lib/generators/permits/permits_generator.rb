@@ -1,5 +1,7 @@
 require 'sugar-high/array'
 require 'active_support/inflector'
+require 'rails3_artifactor'
+require 'logging_assist'
 
 class PermitsGenerator < Rails::Generators::Base
   desc "Creates a Permit for each role in 'app/permits' and ensures that the permit folder is added to Rails load path."
@@ -20,9 +22,15 @@ class PermitsGenerator < Rails::Generators::Base
       template_permit role if !role == :admin     
     end    
     template "licenses.rb", "app/permits/licenses.rb"        
+    permits_initializer
   end
   
   protected
+
+  include Rails3::Assist::BasicLogger
+  extend Rails3::Assist::UseMacro
+  
+  use_helpers :app, :file, :special
 
   attr_accessor :permit_name, :permit_logic
 
@@ -30,6 +38,16 @@ class PermitsGenerator < Rails::Generators::Base
   def roles
     options[:roles].uniq.to_symbols
   end
+  
+  def orm
+    options[:orm]
+  end
+
+  def permits_initializer
+    create_initializer :permits do 
+      "Permits::Ability.orm = :#{orm}"
+    end
+  end 
 
   def template_permit name, template_name=nil
     permit_logic = send "#{name}_logic" if [:admin, :system, :any].include?(name)

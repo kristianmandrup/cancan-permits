@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'generic/spec_helper'
 
 describe Permits::Ability do
   context "Editor user" do

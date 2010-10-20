@@ -1,5 +1,7 @@
 require 'active_record/spec_helper'
 
+Permits::Ability.orm = :active_record
+
 describe Permits::Ability do
   context "Guest user" do
     before :each do

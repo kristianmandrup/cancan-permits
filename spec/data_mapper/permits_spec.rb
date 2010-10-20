@@ -1,11 +1,12 @@
 require 'data_mapper/spec_helper'
 
+Permits::Ability.orm = :data_mapper
+
 describe Permits::Ability do
   context "Guest user" do
     before :each do
       @guest    = User.create(:name => "Kristian", :role => "guest")
-
-      @ability  = Permits::Ability.new(@guest, :strategy => :string)
+      @ability  = Permits::Ability.new(@guest)
 
       @comment  = Comment.create(:user_id => @guest.id)
 

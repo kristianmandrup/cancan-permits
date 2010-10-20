@@ -129,6 +129,21 @@ end
 
 By convention the permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and call enforce! on each license.
 
+## ORMs
+
+The easiest option is to directly set the orm as a class variable. An appropriate ownership strategy will be selected accordingly for the ORM. 
+
+<pre>
+  Permits::Ability.orm = :data_mapper
+</pre>
+
+Alternatively set it for the Ability instance for more fine grained control
+<pre>
+  ability = Permits::Ability.new(@editor, :strategy => :string)  
+</pre>
+
+The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
+
 ## Permits Generator
 
 Options

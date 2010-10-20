@@ -1,5 +1,7 @@
 require 'active_record/spec_helper'
 
+Permits::Ability.orm = :active_record
+
 describe Permits::Ability do
   context "Editor user" do
     context "using default :user_id relation - foreign key to User.id" do   
