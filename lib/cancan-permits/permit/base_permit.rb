@@ -62,7 +62,7 @@ module Permit
     end
 
     def role_match? user
-      user.has_role? self.class.last_name.gsub(/Permit$/, '').downcase.to_sym
+      user.has_role? self.class.underscore.gsub(/Permit$/, '').downcase.to_sym
     end
       
     def can_definitions
