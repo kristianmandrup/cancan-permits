@@ -32,7 +32,7 @@ module Permits
 
     def initialize user, options = {}
       # put ability logic here!
-      user ||= Guest.new
+      user ||= Guest.create
       all_permits = Permits::Ability.permits(self, options)
       all_permits.each do |permit|
         # get role name of permit 

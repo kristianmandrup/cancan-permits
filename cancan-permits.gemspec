@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.2.5"
+  s.version = "0.2.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-10-17}
+  s.date = %q{2010-10-20}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -27,10 +27,11 @@ Gem::Specification.new do |s|
      "cancan-permits.gemspec",
      "development.sqlite3",
      "lib/cancan-permits.rb",
+     "lib/cancan-permits/license/base_license.rb",
      "lib/cancan-permits/main.rb",
      "lib/cancan-permits/namespaces.rb",
-     "lib/cancan-permits/permit/base_license.rb",
      "lib/cancan-permits/permit/base_permit.rb",
+     "lib/cancan-permits/permit/util.rb",
      "lib/cancan-permits/permits/ability.rb",
      "lib/cancan-permits/permits/configuration.rb",
      "lib/cancan-permits/permits/roles.rb",
@@ -56,8 +57,11 @@ Gem::Specification.new do |s|
      "spec/data_mapper/permits_spec.rb",
      "spec/data_mapper/spec_helper.rb",
      "spec/fixtures/permits/admin_permit.rb",
+     "spec/fixtures/permits/any_permit.rb",
      "spec/fixtures/permits/editor_permit.rb",
      "spec/fixtures/permits/guest_permit.rb",
+     "spec/fixtures/permits/super_admin_permit.rb",
+     "spec/fixtures/permits/system_permit.rb",
      "spec/generators/permit_generator_spec.rb",
      "spec/generic/models/all_models.rb",
      "spec/generic/owner_permits_spec.rb",
@@ -92,8 +96,11 @@ Gem::Specification.new do |s|
      "spec/data_mapper/permits_spec.rb",
      "spec/data_mapper/spec_helper.rb",
      "spec/fixtures/permits/admin_permit.rb",
+     "spec/fixtures/permits/any_permit.rb",
      "spec/fixtures/permits/editor_permit.rb",
      "spec/fixtures/permits/guest_permit.rb",
+     "spec/fixtures/permits/super_admin_permit.rb",
+     "spec/fixtures/permits/system_permit.rb",
      "spec/generators/permit_generator_spec.rb",
      "spec/generic/models/all_models.rb",
      "spec/generic/owner_permits_spec.rb",
