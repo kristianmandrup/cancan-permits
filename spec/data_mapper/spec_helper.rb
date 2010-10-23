@@ -7,6 +7,8 @@ require 'dm-migrations'
 DataMapper::Logger.new($stdout, :debug)                 
 DataMapper.setup(:default, 'sqlite::memory:')
 
+Permits::Ability.orm = :data_mapper
+
 RSpec.configure do |config|
   config.mock_with :mocha
 end

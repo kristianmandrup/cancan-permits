@@ -1,6 +1,10 @@
 require 'spec_helper' 
 require 'mongo_mapper'
 
+Permits::Ability.orm = :mongo_mapper
+
+MongoMapper.database = 'cancan-permits_mongo_mapper'
+
 require_all File.dirname(__FILE__) + '/models/all_models'
 
 RSpec.configure do |config|
@@ -27,10 +31,7 @@ class User
     self.role.to_sym == role.to_sym
   end     
 end
-
-                 
-MongoMapper.database = 'cancan-permits_mongo_mapper'
-
+                
 module Database
   def self.teardown
     # MongoMapper.database.collections.each {|collection| collection.drop }    

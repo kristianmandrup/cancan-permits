@@ -3,6 +3,10 @@ require 'mongoid'
 
 require_all File.dirname(__FILE__) + '/models/all_models'
 
+Mongoid.configure.master = Mongo::Connection.new.db('cancan_permits')
+
+Permits::Ability.orm = :mongoid
+
 RSpec.configure do |config|
   config.mock_with :mocha
 end
@@ -27,10 +31,7 @@ class User
     self.role.to_sym == role.to_sym
   end     
 end
-
                  
-Mongoid.configure.master = Mongo::Connection.new.db('cancan_permits')
-
 module Database
   def self.teardown     
     Mongoid.database.collections.each do |coll|

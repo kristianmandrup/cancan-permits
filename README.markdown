@@ -2,18 +2,11 @@
 
 Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
 
-## Update Oct 14
+## Update Oct 22
 
-Now updated to support multiple ownership startegies so that alternative ORMs can be supported.  
-This gem now includes specs that demonstrate how to configure it for use with Active Record, Data Mapper, Mongoid, Mongo Mapper 
-Special thanks to Sam (yoda) for the initial inspiration and work to ensure support for Mongoid  :)
+* Added support for Simply Stored ORM that can be used with Couch DB.
 
-The built in ownership strategies are :default and :string. The default strategy can be used for generic models and Active Record, where there is no need of 
-type conversion. For some ORMs, like fx Mongoid, there is a need to convert the key (BSON Identifier) to a string for the "comparison" to work, hence the strategy is named :string. 
-
-The Permits generator has also been updated slightly to support this new strategy option as of version 0.2.1. 
-In general, the new Permits API now uses an options hash to replace the previous optional request parameter. 
-This design allows for better extensibility in the future if needed. 
+See specs in /simply_stored folder. It took about 2 minutes to create this support, demonstrating how easy it now is to add support for new ORMs and data stores :) 
 
 ## Install
 

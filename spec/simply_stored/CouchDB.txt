@@ -1,0 +1,104 @@
+INSTALL GUIDE
+
+$ brew install couchdb
+
+or download tar at http://www.apache.org/dyn/closer.cgi?path=/couchdb/1.0.1/apache-couchdb-1.0.1.tar.gz
+
+Then follow instructions in the appropriate INSTALL file
+
+user = User.new(:login => 'Bert', :age => 12, :accepted_terms_of_service => true, :last_login = Time.now)
+user.save
+
+User.find_by_age(12).login
+# => 'Bert'
+
+User.all
+# => [user]
+
+class Post
+  include SimplyStored::Couch
+
+  property :title
+  property :body
+
+  belongs_to :user
+end
+
+class User
+  has_many :posts
+end
+
+post = Post.create(:title => 'My first post', :body => 'SimplyStored is so nice!', :user => user)
+
+user.posts
+# => [post]
+
+Post.find_all_by_title_and_user_id('My first post', user.id).first.body
+# => 'SimplyStored is so nice!'
+
+post.destroy
+
+user.posts(:force_reload => true)
+# => []
+
+CouchDB - Associations
+
+The supported associations are: belongs_to, has_one, has_many, and has_many :through
+
+class Post
+  include SimplyStored::Couch
+
+  property :title
+  property :body
+
+  has_many :posts, :dependent => :destroy
+  has_many :users, :through => :posts
+  belongs_to :user
+end
+
+class Comment
+  include SimplyStored::Couch
+
+  property :body
+
+  belongs_to :post
+  belongs_to :user
+end
+
+post = Post.create(:title => 'Look ma!', :body => 'I can have comments')
+
+mike = User.create(:login => 'mike')
+mikes_comment = Comment.create(:user => mike, :post => post, :body => 'Wow, comments are nice')
+
+john = User.create(:login => 'john')
+johns_comment = Comment.create(:user => john, :post => post, :body => 'They are indeed')
+
+post.comments
+# => [mikes_comment, johns_comment]
+
+post.comments(:order => :desc)
+# => [johns_comment, mikes_comment]
+
+post.comments(:limit => 1)
+# => [mikes_comment]
+
+post.comment_count
+# => 2
+
+post.users
+# => [mike, john]
+
+post.user_count
+# => 2
+
+CouchDB - Custom Associations
+
+class Document
+  include SimplyStored::Couch
+
+  belongs_to :creator, :class_name => "User"
+  belongs_to :updater, :class_name => "User"
+end
+
+d = Document.new
+d.creator = User.first

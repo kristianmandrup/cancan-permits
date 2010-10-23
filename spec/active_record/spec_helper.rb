@@ -14,6 +14,8 @@ module Rails
   end
 end
 
+Permits::Ability.orm = :active_record
+
 path = File.dirname(__FILE__) + '/db/database.yml'
 dbfile = File.open(path)
 dbconfig = YAML::load(dbfile)  
