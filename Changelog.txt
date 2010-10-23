@@ -1,0 +1,12 @@
+## Oct 23, 2010
+
+The API specs are now stored in spec/generic/api. To spec that an ORM implementation of cancan-permits work, simply require the 'xgroup_orm' file from the /basic and /owner
+API folders. See current specs for various ORMs for how to do this. In special cases, override the configuration methods present in fx basic/config.rb and owner/config.rb
+
+## Oct 22, 2010
+
+* Added support for Simply Stored ORM that can be used with Couch DB.
+
+See specs in /simply_stored folder. It took only about 2 minutes to create this support, demonstrating how easy it now is to add support for new ORMs and data stores :) 
+
+

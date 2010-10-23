@@ -2,11 +2,9 @@
 
 Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
 
-## Update Oct 22
+## Changes
 
-* Added support for Simply Stored ORM that can be used with Couch DB.
-
-See specs in /simply_stored folder. It took about 2 minutes to create this support, demonstrating how easy it now is to add support for new ORMs and data stores :) 
+See Changelog.txt
 
 ## Install
 
