@@ -11,9 +11,14 @@ module Permit
         begin
           module_name = "#{name.camelize}License"
           clazz = module_name.constantize
+        rescue
+          raise "License #{module_name} is not defined"
+        end
+
+        begin
           clazz.new(self).enforce!
         rescue
-          raise "License #{module_name} not found"
+          raise "License #{clazz} could not be enforced using #{self.inspect}"
         end
       end
     end
