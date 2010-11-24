@@ -21,13 +21,13 @@ class PermitsGenerator < Rails::Generators::Base
     default_roles.each do |role|
       template_permit role
     end
-    template_permit :admin,   :admin_permit 
+
     template_permit :any,     :any_permit 
     template_permit :system,  :barebones_permit
     
     permit_logic = base_logic
     roles.each do |role|      
-      template_permit role if !default_roles.include?(role)
+      template_permit role if !default_roles.include?(role.to_sym)
     end    
     template "licenses.rb", "app/permits/licenses.rb"        
     permits_initializer
