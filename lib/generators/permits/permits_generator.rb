@@ -1,3 +1,4 @@
+require 'rails/generators/base'
 require 'sugar-high/array'
 require 'active_support/inflector'
 require 'rails3_artifactor'
