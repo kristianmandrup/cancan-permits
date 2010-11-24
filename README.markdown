@@ -151,6 +151,15 @@ with the roles found to be available in the app.
 
 <code>$ rails g permits --orm active_record --roles guest author admin</code>
 
+### What does the generator generate?
+
+To get an understanding of what the generator generates for a Rails 3 application, try to run the spec permit_generator_spec.rb with rspec 2 as follows:
+
+<code>$ rspec spec/generators/permit_generator_spec.rb</code>
+
+In the file <code>permit_generator_spec.rb</code> make the following change <code>config.remove_temp_dir = false</code>
+This will prevent the rails /tmp dir from being deleted after the test run, so you can inspect what is generated in the Rails app. 
+
 ## Note on Patches/Pull Requests
  
 * Fork the project.
