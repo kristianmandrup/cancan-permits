@@ -33,35 +33,34 @@ describe 'Permits generator' do
       end    
     
       it "should generate a permits initializer file with orm set to mongoid" do      
-        File.read(initializer_file(:permits)).should match /Permits::Application.orm = mongoid/
+        File.read(initializer_file(:permits)).should match /Permits::Ability.orm = :mongoid/
       end      
     end
   end
 
-  # TODO
+  describe 'result of running generator with option to create permit for each registered role' do
+    context "Registered roles :editor, :admin" do
+      before :each do
+        @generator = with_generator do |g|    
+          g.run_generator "--roles admin editor".args
+        end
+      end
+  
+      it "should have created Guest and Admin permits" do
+        @generator.should have_permit_files :guest, :admin
+      end
+      
+      it "should have created the Editor permit for the :editor role" do      
+        @generator.should have_permit_file :editor do |editor_permit|
+          # guest_permit.should have_licenses :user_admin, :blogging 
+        end
+      end
 
-  # describe 'result of running generator with option to create permit for each registered role' do
-  #   context "Registered roles :guest, :admin"
-  #     before :each do
-  #       with_generator do |g|    
-  #         g.run_generator "--roles admin editor"
-  #       end
-  #     end
-  # 
-  #     it "should have created Guest and Admin permits" do
-  #       # Find at: 'app/permits/admin_permit.rb'
-  #       g.should have_permit_files :guest, :admin
-  # 
-  #       # g.should have_permit_file :guest do |guest_permit|
-  #       #   guest_permit.should have_licenses :user_admin, :blogging 
-  #       # end
-  #       # 
-  #       # g.should have_license_file :licenses do |license_file|      
-  #       #   license_file.should have_module :license do |license_module|
-  #       #     license_module.should have_license_classes :user_admin, :blogging, :superclass => :base
-  #       #   end
-  #       # end
-  #     end
-  #   end #ctx
-  # end    
+      it "should have created the License file with the :user_admin and :blogging licenses used by the :editor permit" do
+        @generator.should have_license_file :licenses do |license_file|      
+          # license_file.should have_license_classes :user_admin, :blogging
+        end
+      end
+    end #ctx
+  end    
 end
