@@ -1,4 +1,5 @@
 require 'cancan-permits/permit/util'
+require 'sugar-high/array'
 
 module Permit
   class Base 
