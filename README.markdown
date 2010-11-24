@@ -4,11 +4,21 @@ Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) perm
 
 ## Changes
 
-See Changelog.txt
+See Changelog.txt (Major updates as per Nov 24. 2010)
 
 ## Install
 
 <code>gem install cancan-permits</code>
+
+## Usage Rails 3 app
+
+Gemfile
+<code>gem 'cancan-permits'</code>
+
+Update gem bundle in terminal:
+<code>$ bundle install</code>
+
+See Generator section below. Also see [CanCan permits demo app](https://github.com/kristianmandrup/cancan-permits-demo)
 
 ## Usage
 

@@ -1,3 +1,9 @@
+## Nov 24, 2010
+
+The generator has now been tested with Rails 3.0.3 and works. Previously there was an issue with missing generator dependencies in the Rakefile.
+Dependencies in general have been updated and the generator improved. 
+Specs have been created for all the ORMs supported.
+
 ## Oct 23, 2010
 
 The API specs are now stored in spec/generic/api. To spec that an ORM implementation of cancan-permits work, simply require the 'xgroup_orm' file from the /basic and /owner
