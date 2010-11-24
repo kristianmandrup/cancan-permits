@@ -78,6 +78,10 @@ You can be enable this simply by setting the following class instance variable:
 
 <code>Permits::Configuration.localhost_manager = true</code>
 
+## Default roles
+
+By default the permits for the roles System and Guest are also generated.
+
 ### Licenses
 
 Permits also supports creation more fine-grained permits through the use of Licenses.  
