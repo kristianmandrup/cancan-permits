@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
@@ -42,8 +42,9 @@ Gem::Specification.new do |s|
      "lib/cancan-permits/rspec/matchers/have_license_class.rb",
      "lib/cancan-permits/rspec/matchers/have_license_file.rb",
      "lib/generators/permits/permits_generator.rb",
-     "lib/generators/permits/templates/licenses.rb",
+     "lib/generators/permits/templates/blogging_license.rb",
      "lib/generators/permits/templates/permit.rb",
+     "lib/generators/permits/templates/user_admin_license.rb",
      "spec/active_record/db/database.yml",
      "spec/active_record/migrations/001_create_user.rb",
      "spec/active_record/migrations/002_create_comment.rb",
