@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.3.1"
+  s.version = "0.3.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
@@ -41,10 +41,12 @@ Gem::Specification.new do |s|
      "lib/cancan-permits/rspec/matchers/have_license.rb",
      "lib/cancan-permits/rspec/matchers/have_license_class.rb",
      "lib/cancan-permits/rspec/matchers/have_license_file.rb",
-     "lib/generators/permits/permits_generator.rb",
-     "lib/generators/permits/templates/blogging_license.rb",
-     "lib/generators/permits/templates/permit.rb",
-     "lib/generators/permits/templates/user_admin_license.rb",
+     "lib/generators/cancan/licenses/licenses_generator.rb",
+     "lib/generators/cancan/licenses/templates/blogging_license.rb",
+     "lib/generators/cancan/licenses/templates/license.rb",
+     "lib/generators/cancan/licenses/templates/user_admin_license.rb",
+     "lib/generators/cancan/permits/permits_generator.rb",
+     "lib/generators/cancan/permits/templates/permit.rb",
      "spec/active_record/db/database.yml",
      "spec/active_record/migrations/001_create_user.rb",
      "spec/active_record/migrations/002_create_comment.rb",
@@ -64,7 +66,8 @@ Gem::Specification.new do |s|
      "spec/fixtures/permits/guest_permit.rb",
      "spec/fixtures/permits/super_admin_permit.rb",
      "spec/fixtures/permits/system_permit.rb",
-     "spec/generators/permit_generator_spec.rb",
+     "spec/generators/cancan/licenses_generator_spec.rb",
+     "spec/generators/cancan/permits_generator_spec.rb",
      "spec/generic/api/basic/config.rb",
      "spec/generic/api/basic/xgroup.rb",
      "spec/generic/api/basic/xgroup_orm.rb",
@@ -114,7 +117,8 @@ Gem::Specification.new do |s|
      "spec/fixtures/permits/guest_permit.rb",
      "spec/fixtures/permits/super_admin_permit.rb",
      "spec/fixtures/permits/system_permit.rb",
-     "spec/generators/permit_generator_spec.rb",
+     "spec/generators/cancan/licenses_generator_spec.rb",
+     "spec/generators/cancan/permits_generator_spec.rb",
      "spec/generic/api/basic/config.rb",
      "spec/generic/api/basic/xgroup.rb",
      "spec/generic/api/basic/xgroup_orm.rb",
@@ -145,7 +149,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 2.0.0"])
+      s.add_development_dependency(%q<rspec>, [">= 2.0.1"])
       s.add_development_dependency(%q<code-spec>, ["~> 0.2.5"])
       s.add_development_dependency(%q<rails-app-spec>, ["~> 0.3.0"])
       s.add_runtime_dependency(%q<cancan>, ["~> 1.4.1"])
@@ -155,7 +159,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<activesupport>, [">= 3.0.1"])
       s.add_runtime_dependency(%q<logging_assist>, [">= 0.1.6"])
     else
-      s.add_dependency(%q<rspec>, [">= 2.0.0"])
+      s.add_dependency(%q<rspec>, [">= 2.0.1"])
       s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
       s.add_dependency(%q<rails-app-spec>, ["~> 0.3.0"])
       s.add_dependency(%q<cancan>, ["~> 1.4.1"])
@@ -166,7 +170,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<logging_assist>, [">= 0.1.6"])
     end
   else
-    s.add_dependency(%q<rspec>, [">= 2.0.0"])
+    s.add_dependency(%q<rspec>, [">= 2.0.1"])
     s.add_dependency(%q<code-spec>, ["~> 0.2.5"])
     s.add_dependency(%q<rails-app-spec>, ["~> 0.3.0"])
     s.add_dependency(%q<cancan>, ["~> 1.4.1"])
