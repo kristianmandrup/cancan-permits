@@ -7,7 +7,7 @@ begin
     gem.email = "kmandrup@gmail.com"
     gem.homepage = "http://github.com/kristianmandrup/cancan-permits"
     gem.authors = ["Kristian Mandrup"]
-    gem.add_development_dependency "rspec",           ">= 2.0.0"
+    gem.add_development_dependency "rspec",           ">= 2.0.1"
     gem.add_development_dependency 'code-spec',       "~> 0.2.5"
     gem.add_development_dependency 'rails-app-spec',  "~> 0.3.0"
 

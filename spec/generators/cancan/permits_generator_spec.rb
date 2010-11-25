@@ -1,7 +1,7 @@
 require 'spec_helper' 
 require 'generator-spec'
 
-require_generator :permits
+require_generator :cancan => :permits
 
 RSpec::Generator.configure do |config|
   config.debug = true
@@ -16,14 +16,13 @@ describe 'Permits generator' do
   use_helpers :controller, :special, :file
     
   setup_generator :permits do
-    tests PermitsGenerator
+    tests Cancan::Generators::PermitsGenerator
   end
 
   describe 'result of running generator with default profile' do
     before :each do
       @generator = with_generator do |g|    
-        arguments = "--orm mongoid".args
-        g.run_generator arguments
+        g.run_generator "--orm mongoid".args
       end
     end
     
@@ -42,7 +41,7 @@ describe 'Permits generator' do
     context "Registered roles :editor, :admin" do
       before :each do
         @generator = with_generator do |g|    
-          g.run_generator "--roles admin editor".args
+          g.run_generator "admin editor".args
         end
       end
   
@@ -53,16 +52,6 @@ describe 'Permits generator' do
       it "should have created the Editor permit for the :editor role and the permit should not use licenses" do      
         @generator.should have_permit_file :editor do |editor_permit|
           editor_permit.should_not have_licenses :user_admin, :blogging 
-        end
-      end
-
-      it "should have created the License file with the :user_admin and :blogging licenses used by the :editor permit" do
-        @generator.should have_license_file :user_admin do |license_file|      
-          license_file.should have_license_class :user_admin
-        end
-
-        @generator.should have_license_file :blogging do |license_file|      
-          license_file.should have_license_class :blogging
         end
       end
     end #ctx
