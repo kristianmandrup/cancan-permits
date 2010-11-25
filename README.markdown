@@ -149,11 +149,50 @@ Alternatively set it for the Ability instance for more fine grained control
 
 The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
 
+## Advanced Permit options
+
+Note that the options hash (second argument of the initializer) can also be used to pass custom data for the permission system to use to determine whether an action
+should be permitted. An example use of this is to pass in the HTTP request object. This approach is used in the default SystemPermit generated.
+
+The ability would most likely be configured with the current request in a view helper or directly from within the controller.
+
+<code>
+  editor_ability = Permits::Ability.new(@editor, :request => request)      
+</code>
+
+A Permit can then use this information
+ 
+<code>
+  def permit?(user, options = {}) 
+    request = options[:request]
+    if request && request.host.localhost? && localhost_manager?
+      can(:manage, :all) 
+      return :break
+    end    
+  end  
+</code>
+
+Now, if a request object is present and the host is 'localhost' and Permits has been configured to allow localhost to manage objects, then:
+The user is allowed to manage all objects and no other Permits are evaluated (to avoid them overriding this full right permission).
+
+In the code above, the built in <code>#localhost_manager?</code> method is used.
+
+To configure permits to allow localhost to manage objects:
+<code>
+  Permits::Configuration.localhost_manager = true
+</code>
+
+Please provide suggestions and feedback on how to improve this :)
+
 ## Permits Generator
 
 Options
-* --orm   : The ORM to use (active_record, data_mapper, mongoid, mongo_mapper)
-* --roles : The roles for which to generate permits ; default Guest (read all) and Admin (manage all) 
+* --orm       : The ORM to use (active_record, data_mapper, mongoid, mongo_mapper) - creates a Rails initializer
+* --roles     : The roles for which to generate permits ; default Guest (read all) and Admin (manage all) 
+* --licenses  : The licenses to generate; default UserAdmin and Blogging licenses are generated
+
+* --default-licenses  : By default exemplar licenses are generated, use --no-default-licenses to disable this
+* --default-permits   : By default guest and admin permits are always generated, use --no-default-permits to disable this
 
 Note, by default the Permits generator will attempt to discover which roles are currently defined as available to the system
 and generate permits for those roles (using some conventions - TODO). Any roles specified in the --roles option are merged

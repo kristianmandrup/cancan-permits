@@ -50,15 +50,19 @@ describe 'Permits generator' do
         @generator.should have_permit_files :guest, :admin
       end
       
-      it "should have created the Editor permit for the :editor role" do      
+      it "should have created the Editor permit for the :editor role and the permit should not use licenses" do      
         @generator.should have_permit_file :editor do |editor_permit|
-          # guest_permit.should have_licenses :user_admin, :blogging 
+          editor_permit.should_not have_licenses :user_admin, :blogging 
         end
       end
 
       it "should have created the License file with the :user_admin and :blogging licenses used by the :editor permit" do
-        @generator.should have_license_file :licenses do |license_file|      
-          # license_file.should have_license_classes :user_admin, :blogging
+        @generator.should have_license_file :user_admin do |license_file|      
+          license_file.should have_license_class :user_admin
+        end
+
+        @generator.should have_license_file :blogging do |license_file|      
+          license_file.should have_license_class :blogging
         end
       end
     end #ctx

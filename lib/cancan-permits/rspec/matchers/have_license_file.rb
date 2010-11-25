@@ -4,6 +4,7 @@ module RSpec::RubyContentMatchers
   module LicenseFile  
     class HaveLicenseFile
       include ::Rails3::Assist::Artifact::Directory
+      include ::Rails3::Assist::Directory
       
       attr_reader :name
   
@@ -12,12 +13,13 @@ module RSpec::RubyContentMatchers
       end
 
       def license_file name
-        File.join(permit_dir, "#{name}.rb")
+        File.join(app_dir, 'licenses', "#{name}_license.rb")
       end
 
       def matches? obj, &block
-        found = File.file? license_file(name)
-        yield if block && found
+        file_name = license_file(name)
+        found = File.file? file_name
+        yield File.read(file_name) if block && found
         found
       end  
     end

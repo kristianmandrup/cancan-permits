@@ -27,7 +27,13 @@ module Permits
         permit = make_permit(role, ability, options)
         permits << permit if permit
       end
-      (special_permits + role_permits).flatten.compact
+      
+      # puts "Role permits: #{role_permits}"
+      
+      all_permits = (special_permits + role_permits).flatten.compact
+      # 
+      # puts "All permits: #{all_permits}"
+      # all_permits      
     end
 
     def initialize user, options = {}
