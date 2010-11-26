@@ -47,8 +47,9 @@ By default it returns User.roles if such exists, otherwise it returns [:guest, :
 
 _Note:_ You might consider using the Permits generator in order to generate your permits for you (see below)
 
+Permit example:
 <pre><code>
-  class AdminPermit < Permit::Base
+  class AdminPermit - Permit::Base
     def initialize(ability, options = {})
       super
     end
@@ -101,7 +102,7 @@ licenses subfolder where you put your license files.
 
 License example:
 <pre><code>
-  class BloggingLicense < License::Base
+  class BloggingLicense - License::Base
     def initialize name
       super
     end
@@ -114,10 +115,11 @@ License example:
   end  
 </code></pre>
 
-Usage example:
+Note: for some reason I had problems with markdown parsing the inheritance symbol "<" :(
 
+Usage example:
 <pre><code>
-  class GuestPermit < Permit::Base
+  class GuestPermit - Permit::Base
     def initialize(ability, options = {})
       super
     end
