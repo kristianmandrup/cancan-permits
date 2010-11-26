@@ -47,7 +47,7 @@ By default it returns User.roles if such exists, otherwise it returns [:guest, :
 
 _Note:_ You might consider using the Permits generator in order to generate your permits for you (see below)
 
-<pre>
+<pre><code>
   class AdminPermit < Permit::Base
     def initialize(ability, options = {})
       super
@@ -60,7 +60,7 @@ _Note:_ You might consider using the Permits generator in order to generate your
       can :manage, :all    
     end  
   end
-</pre>
+</code></pre>
 
 ## Special Permits
 
@@ -100,7 +100,7 @@ The generator will create a licenses.rb file in the permits folder where you can
 licenses subfolder where you put your license files.
 
 License example:
-<pre>
+<pre><code>
   class BloggingLicense < License::Base
     def initialize name
       super
@@ -112,11 +112,11 @@ License example:
       owns(user, Post)
     end
   end  
-</pre>
+</code></pre>
 
 Usage example:
 
-<pre>
+<pre><code>
   class GuestPermit < Permit::Base
     def initialize(ability, options = {})
       super
@@ -130,7 +130,7 @@ Usage example:
     end
   end
 end
-</pre>
+</code></pre>
 
 By convention the permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and call enforce! on each license.
 
