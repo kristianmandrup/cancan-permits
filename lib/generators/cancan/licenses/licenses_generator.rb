@@ -7,7 +7,7 @@ require 'logging_assist'
 module Cancan
   module Generators
     class LicensesGenerator < Rails::Generators::Base
-      desc "Creates Licenses for use with CanCan and Permits"
+      desc "Creates Licenses for use with CanCan Permits"
 
       argument     :licenses,           :type => :array,      :default => [],     :desc => "Licenses"
       class_option :default_licenses,   :type => :boolean,    :default => true,   :desc => "Create default exemplar licenses"
@@ -27,9 +27,6 @@ module Cancan
       protected
 
       include Rails3::Assist::BasicLogger
-      extend Rails3::Assist::UseMacro
-  
-      use_helpers :app, :file, :special
 
       attr_accessor :license_name
 
@@ -47,7 +44,7 @@ module Cancan
 
       def template_license name  
         self.license_name = name        
-        template "license.rb", "app/licenses/#{name}_license.rb"
+        template "base_license.rb", "app/licenses/#{name}_license.rb"
       end
   
       def default_license name 
