@@ -8,8 +8,8 @@ begin
     gem.homepage = "http://github.com/kristianmandrup/cancan-permits"
     gem.authors = ["Kristian Mandrup"]
     gem.add_development_dependency "rspec",           ">= 2.0.1"
-    gem.add_development_dependency 'code-spec',       "~> 0.2.5"
-    gem.add_development_dependency 'rails-app-spec',  "~> 0.3.0"
+    gem.add_development_dependency 'code-spec',       "~> 0.2.9"
+    gem.add_development_dependency 'rails-app-spec',  "~> 0.3.1"
 
     gem.add_dependency 'cancan',            "~> 1.4.1"
     gem.add_dependency 'require_all',       "~> 1.2.0"

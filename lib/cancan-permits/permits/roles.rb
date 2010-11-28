@@ -1,10 +1,11 @@
 module Permits::Roles
   def self.available
-    if Module.const_defined? :User
-      [:guest, :admin]
-      #User.defined_roles if User.respond_to? :defined_roles
+    if defined? ::Cream
+      Cream.available_roles
+    elsif defined? ::User
+      User.roles
     else
-      [:guest, :admin]
+      [:admin, :guest]
     end
   end
 end

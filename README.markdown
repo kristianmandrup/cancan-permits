@@ -18,7 +18,39 @@ Gemfile
 Update gem bundle in terminal:
 <code>$ bundle install</code>
 
-See Generator section below. Also see [CanCan permits demo app](https://github.com/kristianmandrup/cancan-permits-demo)
+See Generator section below. 
+
+See [CanCan permits demo app](https://github.com/kristianmandrup/cancan-permits-demo) for more info on how to set up a Rails 3 app with CanCan permits!
+
+## Rails 3 configuration
+
+Create a rails initializer with the following code:
+<code>
+  module Cream
+    # specify all roles available in your app!
+    def self.available_roles
+      [:guest, :admin]
+    end
+  end  
+</code>
+
+Modify the User model in 'models/user.rb' (optional)
+<code>
+  class User
+    def self.roles
+      Cream.available_roles
+    end   
+    
+    def has_role? role
+      (self.role || 'guest').to_sym == role.to_sym
+    end       
+  end
+</code>
+
+### User Roles
+
+CanCan permits requires that you have some kind of Role system in place and that User#has_role? uses this Role system.
+You can either add a 'role' field directly to User or fx use a [Roles Generic ](https://github.com/kristianmandrup/roles_generic) role strategy.
 
 ## Usage
 
@@ -32,16 +64,19 @@ To add Roles to your app, you might consider using a *roles* gem such as [Roles 
 ### Define which Roles are available
 
 You can override the default configuration here:
-
 <pre>
   module Permits::Roles
     def self.available
-      # return symbols array of Roles available to users 
+      if defined? ::Cream
+        Cream.available_roles
+      elsif defined? ::User
+        User.roles
+      else
+        [:admin, :guest]
+      end
     end
   end
-</pre>  
-
-By default it returns User.roles if such exists, otherwise it returns [:guest, :admin] by default.
+</pre>
 
 ### Define a Permit for each Role. 
 
