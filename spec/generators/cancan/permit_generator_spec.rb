@@ -5,7 +5,7 @@ require_generator :cancan => :permit
 
 RSpec::Generator.configure do |config|
   config.debug = true
-  config.remove_temp_dir = false
+  config.remove_temp_dir = true #false
   config.default_rails_root(__FILE__) 
   config.lib = File.dirname(__FILE__) + '/../lib'
   config.logger = :stdout  # :file
@@ -15,8 +15,8 @@ end
 describe 'Permit generator' do   
   use_helpers :special, :file
     
-  setup_generator :permits do
-    tests Cancan::Generators::PermitsGenerator
+  setup_generator :permit do
+    tests Cancan::Generators::PermitGenerator
   end
 
   describe 'Run Permit generator' do

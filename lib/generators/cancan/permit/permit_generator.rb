@@ -9,8 +9,11 @@ module Cancan
     class PermitGenerator < Rails::Generators::Base
       desc "Creates a Permit for a role in 'app/permits' with specific permissions and/or licenses"
 
-      argument     :name,         :type => :string,    :default => '',  :desc => "Name of license"
+      argument     :role,        :type => :string,      :default => '',               :desc => "Role to create permit for"
 
+      class_option :licenses,     :type => :array,     :default => [],  :desc => "Licenses to use in Permit"
+
+      class_option :creates,      :type => :array,     :default => [],  :desc => "Models allowed to create"
       class_option :manages,      :type => :array,     :default => [],  :desc => "Models allowed to manage"
       class_option :reads,        :type => :array,     :default => [],  :desc => "Models allowed to read"
       class_option :owns,         :type => :array,     :default => [],  :desc => "Models allowed to own"
@@ -18,14 +21,18 @@ module Cancan
       source_root File.dirname(__FILE__) + '/templates'
 
       def main_flow      
-        return nil if name.empty?
-        create_license
+        return if role.empty?
+        template_permit
       end
   
       protected
 
       include Rails3::Assist::BasicLogger
 
+      def creates
+        options[:creates]
+      end
+      
       def manages
         options[:manages]
       end
@@ -42,27 +49,21 @@ module Cancan
         options[:owns]
       end
 
-      def create_license        
-        template "license.rb", "app/licenses/#{name}_license.rb"
+      def template_permit        
+        template "role_permit.rb", "app/permits/#{role}_permit.rb"
       end 
-
-      def logic
-        [:create, :manage, :own, :read, :license].map do |action|
-          send :"#{action}_logic"
-        end.join("\n    ")
-      end
-
-      [:create, :manage, :own, :read].each do |action|
-        class_eval %{
-          def #{action}_logic
-            creates.map{|c| "can(:#{action}, \#{act_model(c)})"}.join("\n    ")
-          end          
-        }
-      end
 
       def act_model name
         return ':all' if name == 'all'
         name.camelize
+      end
+
+      def permit_logic
+        [:creates, :manages, :owns, :reads].map do |a|
+          options[a].map do |c| 
+            "can(:#{a.to_s.singularize}, #{act_model(c)})"
+          end.join("\n    ")
+        end.join("\n    ")
       end
 
       def license_logic

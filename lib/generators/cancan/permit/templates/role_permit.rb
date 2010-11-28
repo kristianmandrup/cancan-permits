@@ -6,7 +6,7 @@ class <%= role.to_s.camelize %>Permit < Permit::Base
   def permit?(user, options = {})
     super
     return if !role_match? user
-
-    <%= logic %>
+    <%= permit_logic.strip %>
+    <%= license_logic %>
   end  
 end

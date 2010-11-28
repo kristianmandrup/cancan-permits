@@ -5,7 +5,7 @@ require_generator :cancan => :license
 
 RSpec::Generator.configure do |config|
   config.debug = true
-  config.remove_temp_dir = false
+  config.remove_temp_dir = true #false
   config.default_rails_root(__FILE__) 
   config.lib = File.dirname(__FILE__) + '/../lib'
   config.logger = :stdout  # :file
@@ -22,7 +22,7 @@ describe 'License generator' do
   describe "License: Profile Administration" do
     before :each do
       @generator = with_generator do |g|    
-        g.run_generator "profile_administration --owns article --reads all".args
+        g.run_generator "profile_administration --owns article --reads all --licenses blogging".args
       end
     end
 

@@ -6,6 +6,8 @@ Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) perm
 
 See Changelog.txt (Major updates as per Nov 24. 2010)
 
+Nov 28: Added Generators to create individual Permit and License!
+
 ## Install
 
 <code>gem install cancan-permits</code>
@@ -226,7 +228,9 @@ Please provide suggestions and feedback on how to improve this :)
 The gem comes with the following generators
 
 * cancan:permits
+* cancan:permit
 * cancan:licenses
+* cancan:license
 
 ## Permits Generator
 
@@ -275,6 +279,40 @@ To get an understanding of what the generator generates for a Rails 3 applicatio
 
 In the file <code>licenses_generator_spec.rb</code> make the following change <code>config.remove_temp_dir = false</code>
 This will prevent the rails /tmp dir from being deleted after the test run, so you can inspect what is generated in the Rails app. 
+
+## License Generator
+
+<code>rails g cancan:license [NAME]</code>
+
+Options
+* --creates : The models that have 'creates' permission for the holder of this license 
+* --owns    : The models that have 'owns' permission for the holder of this license 
+* --manages : The models that have 'manages' permission for the holder of this license 
+* --read    : The models that have 'read' permission for the holder of this license 
+
+Run examples:
+
+Generate licenses:
+
+<code>$ rails g cancan:license blog_editing --owns article post --read blog --licenses blogging</code>
+
+## Permit Generator
+
+Generate a named permit
+
+<code>rails g cancan:permit [ROLE]</code>
+
+Options
+* --creates : The models that have 'creates' permission for the holder of this license 
+* --owns    : The models that have 'owns' permission for the holder of this license 
+* --manages : The models that have 'manages' permission for the holder of this license 
+* --read    : The models that have 'read' permission for the holder of this license 
+
+Run examples:
+
+Generate licenses:
+
+<code>$ rails g cancan:permit editor --owns article post --read blog --licenses blog_editing</code>
 
 # TODO ?
 
