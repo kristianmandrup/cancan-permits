@@ -1,0 +1,12 @@
+blogging:
+  can:
+    manage:
+      - Article
+      - Post
+admin:
+  can:
+    manage:
+      - all
+  cannot:
+    manage:
+      - User

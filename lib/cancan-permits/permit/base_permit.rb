@@ -6,6 +6,8 @@ module Permit
     attr_reader :ability
     attr_reader :strategy # this can be used to customize the strategy used by owns to determine ownership, fx to support alternative ORMs 
 
+    attr_reader :user_permissions
+
     def licenses *names
       names.to_strings.each do |name|         
         begin
@@ -22,10 +24,27 @@ module Permit
         end
       end
     end
+
+    def load_enforcements user 
+      return if !user_permissions || user_permissions.empty?
+      raise "#load_enforcements expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
+
+      id = user.email
+      return nil if id.strip.empty?
+
+      user_permissions[id].can_statement do |permission_statement|
+        instance_eval permission_statement
+      end
+
+      user_permissions[id].cannot_statement do |permission_statement|
+        instance_eval permission_statement
+      end
+    end
        
     def initialize ability, options = {}
       @ability  = ability
       @strategy = options[:strategy] || Permits::Ability.strategy || :default      
+      @user_permissions = ::PermissionsLoader.load_user_permissions options[:permissions_file]
     end
 
     def permit?(user, options = {}) 

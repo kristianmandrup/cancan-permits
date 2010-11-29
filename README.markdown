@@ -6,7 +6,12 @@ Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) perm
 
 See Changelog.txt (Major updates as per Nov 24. 2010)
 
-Nov 28: Added Generators to create individual Permit and License!
+Nov 28: 
+Added Generators to create individual Permit and License!
+
+Nov 29: 
+Added ability to specify YAML files with configurations for Permits, Licenses and even Permissions for individual users.
+Thanks to 'ticktricktrack' for the request and suggestion. (I hope you can use this and move on from here...)
 
 ## Install
 

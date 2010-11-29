@@ -1,0 +1,12 @@
+abc@mail.ru:
+  can:
+    update: [Comment, Fruit, Car, Friendship]        
+    manage: Article
+    owns: User
+hans.himmel@mail.come:
+  can:
+    read:
+      - all
+  cannot:
+    update:
+      - Post
