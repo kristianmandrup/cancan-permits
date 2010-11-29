@@ -13,9 +13,11 @@ module License
       raise "enforce! must be implemented by subclass of License::Base"
     end
 
-    def load_enforcements name
+    def load_rules name = nil
       return if !licenses || licenses.empty?      
-      
+
+      name ||= self.class.to_s..gsub(/License$/, "").underscore.to_sym
+            
       licenses[name].can_statement do |permission_statement|
         instance_eval permission_statement
       end

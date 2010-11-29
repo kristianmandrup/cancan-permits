@@ -25,7 +25,7 @@ module Permit
       end
     end
 
-    def load_enforcements user 
+    def load_rules user 
       return if !user_permissions || user_permissions.empty?
       raise "#load_enforcements expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
 

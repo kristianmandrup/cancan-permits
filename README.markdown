@@ -54,6 +54,84 @@ Modify the User model in 'models/user.rb' (optional)
   end
 </code>
 
+### Load Permissions from yml files
+
+*Individual user permissions:*
+- config/user_permissions.yml
+
+Each key at the top level is expected to match an email value for an existing user.
+
+Example yml config file:
+<code>
+abc@mail.ru:
+  can:
+    update: [Comment, Fruit, Car, Friendship]        
+    manage: 
+      - Article
+    owns: 
+      - User
+mike.shedlock.com:
+  can:
+    read:
+      - all
+  cannot:
+    update:
+      - Post
+</code>
+
+Usage in a permit
+
+<code>
+class AdminPermit < Permit::Base
+  def initialize(ability, options = {})
+    super
+  end
+
+  def permit?(user, options = {})
+    super
+    return if !role_match? user
+    can :manage, :all          
+    load_rules user
+  end  
+end
+</code>
+
+
+*License permissions:*
+- config/licenses.yml
+
+Each key at the top level is expected to match a license name.
+
+Example yml config file:
+<code>
+blogging:
+  can:
+    manage:
+      - Article
+      - Post
+admin:
+  can:
+    manage:
+      - all
+  cannot:
+    manage:
+      - User  
+</code>
+
+Usage in a license
+
+<code>
+class UserAdminLicense < License::Base
+  def initialize name
+    super
+  end
+
+  def enforce!
+    can(:manage, User)
+    load_rules
+  end  
+</code>
+
 ### User Roles
 
 CanCan permits requires that you have some kind of Role system in place and that User#has_role? uses this Role system.
@@ -99,7 +177,6 @@ Permit example:
     def permit?(user, options = {})    
       super
       return if !role_match? user
-
       can :manage, :all    
     end  
   end

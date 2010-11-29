@@ -1,9 +1,11 @@
 abc@mail.ru:
   can:
     update: [Comment, Fruit, Car, Friendship]        
-    manage: Article
-    owns: User
-hans.himmel@mail.come:
+    manage: 
+      - Article
+    owns: 
+      - User
+mike.shedlock.com:
   can:
     read:
       - all
