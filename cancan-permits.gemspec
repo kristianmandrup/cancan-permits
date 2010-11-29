@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.3.4"
+  s.version = "0.3.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-11-28}
+  s.date = %q{2010-11-29}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -28,6 +28,9 @@ Gem::Specification.new do |s|
     "development.sqlite3",
     "lib/cancan-permits.rb",
     "lib/cancan-permits/license/base_license.rb",
+    "lib/cancan-permits/loader/permission_config.rb",
+    "lib/cancan-permits/loader/permissions_loader.rb",
+    "lib/cancan-permits/loader/permissions_parser.rb",
     "lib/cancan-permits/main.rb",
     "lib/cancan-permits/namespaces.rb",
     "lib/cancan-permits/permit/base_permit.rb",
@@ -59,6 +62,10 @@ Gem::Specification.new do |s|
     "spec/active_record/owner_permits_spec.rb",
     "spec/active_record/permits_spec.rb",
     "spec/active_record/spec_helper.rb",
+    "spec/cancan-permits/license_loader/license_loader_spec.rb",
+    "spec/cancan-permits/license_loader/licenses.yml",
+    "spec/cancan-permits/user_permissions_loader/user_permissions.yml",
+    "spec/cancan-permits/user_permissions_loader/user_permissions_loader.rb",
     "spec/data_mapper/models/all_models.rb",
     "spec/data_mapper/owner_permits_spec.rb",
     "spec/data_mapper/permits_spec.rb",
@@ -111,6 +118,8 @@ Gem::Specification.new do |s|
     "spec/active_record/owner_permits_spec.rb",
     "spec/active_record/permits_spec.rb",
     "spec/active_record/spec_helper.rb",
+    "spec/cancan-permits/license_loader/license_loader_spec.rb",
+    "spec/cancan-permits/user_permissions_loader/user_permissions_loader.rb",
     "spec/data_mapper/models/all_models.rb",
     "spec/data_mapper/owner_permits_spec.rb",
     "spec/data_mapper/permits_spec.rb",
