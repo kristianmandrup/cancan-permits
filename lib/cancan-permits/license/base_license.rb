@@ -16,7 +16,7 @@ module License
     def load_rules name = nil
       return if !licenses || licenses.empty?      
 
-      name ||= self.class.to_s..gsub(/License$/, "").underscore.to_sym
+      name ||= self.class.to_s.gsub(/License$/, "").underscore.to_sym
             
       licenses[name].can_statement do |permission_statement|
         instance_eval permission_statement

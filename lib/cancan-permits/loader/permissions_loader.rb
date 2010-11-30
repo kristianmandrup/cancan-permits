@@ -33,6 +33,12 @@ class PermissionsLoader
     name ||= licenses_config_file
     PermissionsLoader.new name
   end
+
+  def self.load_permits name = nil
+    name ||= permits_config_file
+    PermissionsLoader.new name
+  end
+
   
   def self.user_permissions_config_file
     # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails

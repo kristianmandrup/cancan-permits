@@ -5,7 +5,7 @@ DIR = File.dirname(__FILE__)
 
 describe 'User Permissions Loader' do
   before :each do
-    @permissions_file = File.join(DIR, 'user_permissions.yml')
+    @permissions_file = File.join(DIR, 'config', 'user_permissions.yml')
   end
 
   it "should load a user permissions file" do
@@ -15,7 +15,7 @@ describe 'User Permissions Loader' do
   end    
   
   it "should be able to instantiate a base permit with permission file" do
-    Permit::Base.new 'x', :permissions_file => @permissions_file
+    Permit::Base.new 'x', :user_permissions_file => @permissions_file
   end   
 
   it "should be able to instantiate a base permit without permission file" do

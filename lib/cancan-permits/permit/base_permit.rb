@@ -25,9 +25,27 @@ module Permit
       end
     end
 
-    def load_rules user 
+    def load_rules user
+      load_role_rules
+      load_user_rules user
+    end
+
+    def load_role_rules
+      return if !role_permissions || role_permissions.empty?
+      name ||= self.class.to_s.gsub(/Permit$/, "").underscore.to_sym
+            
+      role_permissions[name].can_statement do |permission_statement|
+        instance_eval permission_statement
+      end
+
+      role_permissions[name].cannot_statement do |permission_statement|
+        instance_eval permission_statement
+      end
+    end
+
+    def load_user_rules user 
       return if !user_permissions || user_permissions.empty?
-      raise "#load_enforcements expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
+      raise "#load_user_rules expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
 
       id = user.email
       return nil if id.strip.empty?
@@ -44,7 +62,8 @@ module Permit
     def initialize ability, options = {}
       @ability  = ability
       @strategy = options[:strategy] || Permits::Ability.strategy || :default      
-      @user_permissions = ::PermissionsLoader.load_user_permissions options[:permissions_file]
+      @user_permissions = ::PermissionsLoader.load_user_permissions options[:user_permissions_file]
+      @role_permissions = ::PermissionsLoader.load_permits options[:permits_file]
     end
 
     def permit?(user, options = {}) 

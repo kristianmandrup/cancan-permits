@@ -3,9 +3,9 @@ require 'cancan-permits'
 
 DIR = File.dirname(__FILE__) 
 
-describe 'Load License permissions' do
+describe 'Load License rules' do
   before :each do
-    @permissions_file = File.join(DIR, 'licenses.yml')
+    @permissions_file = File.join(DIR, 'config', 'licenses.yml')
   end
 
   it "should load a licenses permission file" do
@@ -19,7 +19,7 @@ describe 'Load License permissions' do
   end   
   
   it "should be able to instantiate a base permit without permission file" do
-    Permit::Base.new 'x'
+    License::Base.new 'x'
   end     
 end
 
