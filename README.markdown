@@ -96,6 +96,46 @@ class AdminPermit < Permit::Base
 end
 </code>
 
+the call to #load_rules will call both #load_user_roles and #load_role_rules. 
+If you want you can call these methods individually, fx if you only want to apply one set of rules.
+
+*Permit rules:*
+- config/permits.yml
+
+Each key at the top level is expected to match a permit/role name.
+
+Example yml config file:
+<code>
+admin:
+  can:
+    manage:
+      - Article
+      - Post
+guest:
+  can:
+    manage:
+      - all
+  cannot:
+    manage:
+      - User  
+</code>
+
+Usage in a license
+
+<code>
+class GuestPermit < Permit::Base
+  def initialize(ability, options = {})
+    super
+  end
+
+  def permit?(user, options = {})    
+    super
+    return if !role_match? user
+    can :manage, :all    
+    load_rules user
+  end  
+end
+</code>
 
 *License permissions:*
 - config/licenses.yml
