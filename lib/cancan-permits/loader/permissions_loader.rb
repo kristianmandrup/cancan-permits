@@ -6,7 +6,7 @@ class PermissionsLoader
     begin
       if file_name.nil? || !File.file?(file_name)
         # raise ArgumentError, "PermissionsLoader Error: The permissions file #{file_name} could not be found" 
-        puts "PermissionsLoader Error: The permissions file #{file_name} could not be found" 
+        # puts "PermissionsLoader Error: The permissions file #{file_name} could not be found" 
         return nil
       end
 
@@ -38,15 +38,29 @@ class PermissionsLoader
     name ||= permits_config_file
     PermissionsLoader.new name
   end
-
+  
+  def self.permits_config_file
+    # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails
+    get_config_file 'permits'
+  end
   
   def self.user_permissions_config_file
     # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails
-    File.join(::Rails.root, 'config', 'user_permissions.yml') if defined? Rails
+    get_config_file 'user_permissions'
   end
 
   def self.licenses_config_file
     # raise '#licenses_config_file only works in a Rails app enviroment' if !defined? Rails
-    File.join(::Rails.root, 'config', 'licenses.yml') if defined? Rails
+    get_config_file 'licenses'
+  end
+  
+  protected
+
+  def self.get_config_file name
+    File.join(::Rails.root, 'config', "#{name}.yml") if rails?
+  end
+  
+  def self.rails?
+    defined?(Rails) && Rails.respond_to?(:root)
   end
 end

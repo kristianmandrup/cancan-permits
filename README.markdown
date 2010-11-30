@@ -96,7 +96,7 @@ class AdminPermit < Permit::Base
 end
 </code>
 
-the call to #load_rules will call both #load_user_roles and #load_role_rules. 
+The call to #load_rules will call both #load_user_roles and #load_role_rules. 
 If you want you can call these methods individually, fx if you only want to apply one set of rules.
 
 *Permit rules:*

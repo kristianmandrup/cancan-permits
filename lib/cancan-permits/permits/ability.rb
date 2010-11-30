@@ -59,14 +59,22 @@ module Permits
     protected
 
     include Permit::Util
+
+    def self.get_permit role
+      begin            
+        clazz_name = "#{role.to_s.camelize}Permit"
+        clazz_name.constantize
+      rescue
+        raise "Permit #{clazz_name} not loaded and thus not defined"
+      end
+    end
     
     def self.make_permit role, ability, options = {}
       begin            
-        clazz_name = "#{role.to_s.camelize}Permit"
-        permit_clazz = clazz_name.constantize
+        permit_clazz = get_permit role
         permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
-      rescue
-        raise "Permit #{clazz_name} not found"
+      rescue RuntimeError => e
+        raise "Error instantiating Permit instance for #{permit_clazz}, cause #{e}"
       end
     end          
   end
