@@ -1,0 +1,11 @@
+<%= [:read :write, :create].each do |action| %> 
+  <!-- can[edit][Article] -->
+  <%= checkbox_tag "can[#{action}][#{{model.name}}]",  %>
+  <%= f.label action.to_s.humanize %>
+<% end %>
+<br>
+<%= [:update :manage :delete].each do |action| %>
+  <!-- can[update][Article] -->
+  <%= checkbox_tag "can[#{action}][#{{model.name}}]",  %>
+  <%= f.label action.to_s.humanize %>        
+<% end %>

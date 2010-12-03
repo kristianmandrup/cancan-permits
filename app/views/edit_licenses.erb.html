@@ -1,0 +1,20 @@
+<!-- on role select update forms below -->
+<!-- Use simple form or semantic form !!! -->
+<%= form role_select_path do |f| %>
+  <!--  show drop down selection -->
+  collection_select :license_id, License.all, :id, :name
+  <!-- Should auto submit on drop down selection! -->
+  <%= f.submit 'Select' %>
+<% end %>
+
+<%= form_for @license %>
+  <% f.text_field :new_license %>
+  <% f.button 'New license' %>
+<% end %>
+
+<!-- reflect all permissions for all models for selected license -->
+<h1><%= license.name %></h1>
+<%= form_for :license_permissions do |f| %>
+  <%= render 'permit_fields', :f => f %>
+<% end %>
+

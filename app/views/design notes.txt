@@ -1,0 +1,9 @@
+Normally just a few roles and no more than 10-20 models.
+
+model     can                      cannot
+Article   :read :write :create     :read :write :create
+          :update :manage :delete  :update :manage :delete 
+
+Post      :read :write :create     :read :write :create
+          :update :manage :delete  :update :manage :delete
+                                                        

@@ -1,0 +1,13 @@
+<!-- on role select update forms below -->
+<!--  show drop down selection -->
+<%= form role_select_path do |f| %>
+  collection_select_tag :role_id, Role.all, :id, :name
+  <!-- Should auto submit on drop down selection! -->
+  <%= f.submit 'Select' %>
+<% end %>
+
+<!-- reflect all permissions for all models for selected role -->
+<%= form :models_permissions do |f| %>
+  <%= render 'permit_fields', :f => f %>
+<% end %>
+
