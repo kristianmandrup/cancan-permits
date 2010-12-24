@@ -66,7 +66,10 @@ module Permit
       @role_permissions = ::PermissionsLoader.load_permits options[:permits_file]
     end
 
-    def permit?(user, options = {}) 
+    def permit?(user, options = {})
+      if options == :in_role 
+        return true if !role_match? user 
+      end
       false
     end
 
