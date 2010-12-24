@@ -2,17 +2,6 @@
 
 Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
 
-## Changes
-
-See Changelog.txt (Major updates as per Nov 24. 2010)
-
-Nov 28: 
-Added Generators to create individual Permit and License!
-
-Nov 29: 
-Added ability to specify YAML files with configurations for Permits, Licenses and even Permissions for individual users.
-Thanks to 'ticktricktrack' for the request and suggestion. (I hope you can use this and move on from here...)
-
 ## Install
 
 <code>gem install cancan-permits</code>
@@ -31,58 +20,76 @@ See [CanCan permits demo app](https://github.com/kristianmandrup/cancan-permits-
 
 ## Rails 3 configuration
 
+Note: This description does not apply to how CanCan-permits is used with [Cream](https://github.com/kristianmandrup/cream)
+
 Create a rails initializer with the following code:
-<code>
-  module Cream
-    # specify all roles available in your app!
-    def self.available_roles
-      [:guest, :admin]
-    end
-  end  
-</code>
+
+<pre>module Cream
+  # specify all roles available in your app!
+  def self.available_roles
+    [:guest, :admin]
+  end
+end  
+</pre>
 
 Modify the User model in 'models/user.rb' (optional)
-<code>
-  class User
-    def self.roles
-      Cream.available_roles
-    end   
-    
-    def has_role? role
-      (self.role || 'guest').to_sym == role.to_sym
-    end       
-  end
-</code>
 
-### Load Permissions from yml files
+<pre>class User
+  def self.roles
+    Cream.available_roles
+  end   
+  
+  def has_role? role
+    (self.role || 'guest').to_sym == role.to_sym
+  end       
+end
+</pre>
 
-*Individual user permissions:*
-- config/user_permissions.yml
+## Load Permissions from yaml files
 
-Each key at the top level is expected to match an email value for an existing user.
+Permissions can be defined in yaml files in the config directory of your Rails app.
+These permissions will then be applied at the appropriate point when calculation permissions of the user.
 
-Example yml config file:
-<code>
-abc@mail.ru:
+* Individual user permissions
+* Permits
+* Licenses
+
+### Permission editor
+
+A simple [Permits editor](https://github.com/kristianmandrup/permits_editor) is available. This is a Rails 3 app which provides a web interface to
+edit the permits config files for: user permissions, permits and licenses.
+
+I would like to have this editor refactored into an engine and later into a mountable app so that this administrative interface can easily be integrated into a Cream app.
+
+_You are most welcome to help in this effort ;)_
+
+### Individual user permissions
+
+You can define individual user permissions in a yaml file.
+                  
+YAML file: _config/user_permissions.yml_
+
+Each key at the top level is expected to match an email value for a user.
+
+Example yaml config file:
+<pre>abc@mail.ru:
   can:
     update: [Comment, Fruit, Car, Friendship]        
     manage: 
       - Article
     owns: 
       - User
-mike.shedlock.com:
+mike.shedlock@acc.com:
   can:
     read:
       - all
   cannot:
     update:
       - Post
-</code>
+</pre>
 
-Usage in a permit
-
-<code>
-class AdminPermit < Permit::Base
+Loading YAML user_permits file in a Permit:
+<pre>class AdminPermit < Permit::Base
   def initialize(ability, options = {})
     super
   end
@@ -91,22 +98,23 @@ class AdminPermit < Permit::Base
     super
     return if !role_match? user
     can :manage, :all          
+
     load_rules user
   end  
 end
-</code>
+</pre>
 
-The call to #load_rules will call both #load_user_roles and #load_role_rules. 
-If you want you can call these methods individually, fx if you only want to apply one set of rules.
+The call to #load_rules will call both _#load_user_roles_ and _#load_role_rules_. Hence by default it applies both the _user_permits_ and _permits_ config files. 
+If you want, you can call these methods individually in case only want to apply one set of rules.
 
-*Permit rules:*
-- config/permits.yml
+### Permit rules
+
+YAML file: _config/permits.yml_
 
 Each key at the top level is expected to match a permit/role name.
 
 Example yml config file:
-<code>
-admin:
+<pre>admin:
   can:
     manage:
       - Article
@@ -118,33 +126,19 @@ guest:
   cannot:
     manage:
       - User  
-</code>
+</pre>
 
-Usage in a license
+As you can see
 
-<code>
-class GuestPermit < Permit::Base
-  def initialize(ability, options = {})
-    super
-  end
+### License permissions 
 
-  def permit?(user, options = {})    
-    super
-    return if !role_match? user
-    can :manage, :all    
-    load_rules user
-  end  
-end
-</code>
-
-*License permissions:*
-- config/licenses.yml
+YAML file: _config/licenses.yml_
 
 Each key at the top level is expected to match a license name.
 
 Example yml config file:
-<code>
-blogging:
+
+<pre>blogging:
   can:
     manage:
       - Article
@@ -156,25 +150,24 @@ admin:
   cannot:
     manage:
       - User  
-</code>
+</pre>
 
-Usage in a license
-
-<code>
-class UserAdminLicense < License::Base
+Usage in a license:
+<pre>class UserAdminLicense < License::Base
   def initialize name
     super
   end
 
   def enforce!
     can(:manage, User)
+
     load_rules
   end  
-</code>
+</pre>
 
 ### User Roles
 
-CanCan permits requires that you have some kind of Role system in place and that User#has_role? uses this Role system.
+_CanCan permits_ requires that you have some kind of Role system in place and that User#has_role? uses this Role system.
 You can either add a 'role' field directly to User or fx use a [Roles Generic ](https://github.com/kristianmandrup/roles_generic) role strategy.
 
 ## Usage
@@ -188,39 +181,42 @@ To add Roles to your app, you might consider using a *roles* gem such as [Roles 
 
 ### Define which Roles are available
 
-You can override the default configuration here:
-<pre>
-  module Permits::Roles
-    def self.available
-      if defined? ::Cream
-        Cream.available_roles
-      elsif defined? ::User
-        User.roles
-      else
-        [:admin, :guest]
-      end
+Default configuration:
+<pre>module Permits::Roles
+  def self.available
+    if defined? ::Cream
+      Cream.available_roles
+    elsif defined? ::User
+      User.roles
+    else
+      [:admin, :guest]
     end
   end
+end
 </pre>
+
+_CanCan permits_ will first try to assume it is used with Cream. If not it will fallback to try and get the roles from User#roles. 
+If all else fails, it will assume only the :guest and :admin roles are available. 
+
+You can always monkeypatch this configuration implementation to suit your own needs.
 
 ### Define a Permit for each Role. 
 
-_Note:_ You might consider using the Permits generator in order to generate your permits for you (see below)
+You can use the _Permits generator_ to generate your permits. Permits should be placed in the app/permits folder.
 
 Permit example:
-<pre><code>
-  class AdminPermit - Permit::Base
-    def initialize(ability, options = {})
-      super
-    end
-
-    def permit?(user, options = {})    
-      super
-      return if !role_match? user
-      can :manage, :all    
-    end  
+<pre>class AdminPermit < Permit::Base
+  def initialize(ability, options = {})
+    super
   end
-</code></pre>
+
+  def permit?(user, options = {})    
+    super
+    return if !role_match? user
+    can :manage, :all    
+  end  
+end
+</pre>
 
 ## Special Permits
 
@@ -232,9 +228,7 @@ The Any permit, can be used to set permissions that should hold true for a user 
 F.ex, maybe in your app, any user should be able to read comments, articles and posts:
 
 For this to hold true, put the following permit logic in your Any permit.
-<pre>
-  can :read, [Comment, Article, Post]
-</pre>
+<pre>can :read, [Comment, Article, Post]</pre>
 
 ### System permit
 
@@ -242,9 +236,10 @@ The System permit is run before any of the other permits. This gives you a chanc
 By returning a value of :break you force a break-out from the permission flow, ensuring none of the other permits are run.
 
 Example:
-The system permit can be used to allow management of all resources given the request is from localhost (which usually means "in development mode"). By default this logic is setup and ready to go. 
+The system permit can be used to allow management of all resources when the request is from localhost (which usually means "in development mode"). 
+By default this logic is setup and ready to go. 
 
-You can be enable this simply by setting the following class instance variable: 
+You can configure this simply by setting the following boolean class variable: 
 
 <code>Permits::Configuration.localhost_manager = true</code>
 
@@ -254,31 +249,27 @@ By default the permits for the roles System and Guest are also generated.
 
 ### Licenses
 
-Permits also supports creation more fine-grained permits through the use of Licenses.  
-Licenses are a way to group logical fragments of permission statements to be reused across multiple permits.
-The generator will create a licenses.rb file in the permits folder where you can put your licenses. For more complex scenarios, you might want to have a separate
-licenses subfolder where you put your license files.
+Permits support creation of more fine-grained permits through the use of _Licenses_.  
+Licenses are a way to group logical fragments of permission statements to be reused across multiple Permits.
+
+You can use the _License generator_ to generate your licenses. Lincenses should be placed in the _app/licenses_ folder.
 
 License example:
-<pre><code>
-  class BloggingLicense - License::Base
-    def initialize name
-      super
-    end
+<pre>class BloggingLicense < License::Base
+  def initialize name
+    super
+  end
 
-    def enforce!
-      can(:read, Blog)
-      can(:create, Post)
-      owns(user, Post)
-    end
-  end  
-</code></pre>
-
-Note: for some reason I had problems with markdown parsing the inheritance symbol "<" :(
+  def enforce!
+    can(:read, Blog)
+    can(:create, Post)
+    owns(user, Post)
+  end
+end  
+</pre>
 
 Usage example:
-<pre><code>
-  class GuestPermit - Permit::Base
+<pre>class GuestPermit < Permit::Base
     def initialize(ability, options = {})
       super
     end
@@ -291,9 +282,9 @@ Usage example:
     end
   end
 end
-</code></pre>
+</pre>
 
-By convention the permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and call enforce! on each license.
+The permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and then call _#enforce!_ on each license.
 
 ## ORMs
 
@@ -303,12 +294,18 @@ The easiest option is to directly set the orm as a class variable. An appropriat
   Permits::Ability.orm = :data_mapper
 </pre>
 
-Alternatively set it for the Ability instance for more fine grained control
-<pre>
-  ability = Permits::Ability.new(@editor, :strategy => :string)  
-</pre>
-
 The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
+
+For more fine grained control, you can set a :strategy option directly on the Ability instance. This way the ownership strategy is set explicitly.
+The current valid values are :default and :string.
+
+The strategy option :string can be used for most ORMs. Setting orm to :active_record or :generic makes use of the :default strategy. 
+All the other ORMs use the :string ownership strategy,
+
+Note: You can dive into the code and implement your own strategy if needed.
+
+Setting the ownership strategy directly:
+<pre>ability = Permits::Ability.new(@editor, :strategy => :string)</pre>
 
 ## Advanced Permit options
 
@@ -317,26 +314,23 @@ should be permitted. An example use of this is to pass in the HTTP request objec
 
 The ability would most likely be configured with the current request in a view helper or directly from within the controller.
 
-<code>
-  editor_ability = Permits::Ability.new(@editor, :request => request)      
-</code>
+<code>editor_ability = Permits::Ability.new(@editor, :request => request)</code>
 
-A Permit can then use this information
- 
-<code>
-  def permit?(user, options = {}) 
-    request = options[:request]
-    if request && request.host.localhost? && localhost_manager?
-      can(:manage, :all) 
-      return :break
-    end    
-  end  
-</code>
+A Permit can then use this extra information
 
-Now, if a request object is present and the host is 'localhost' and Permits has been configured to allow localhost to manage objects, then:
-The user is allowed to manage all objects and no other Permits are evaluated (to avoid them overriding this full right permission).
+Advanced #permit? functionality:  
+<pre>def permit?(user, options = {}) 
+  request = options[:request]
+  if request && request.host.localhost? && localhost_manager?
+    can(:manage, :all) 
+    return :break
+  end    
+end  
+</pre>
 
-In the code above, the built in <code>#localhost_manager?</code> method is used.
+### Global manage permission for localhost
+
+The Permits system allows a global setting in order to allow localhost to manage all objects. This can be useful in development or administration mode. 
 
 To configure permits to allow localhost to manage objects:
 <code>
@@ -345,16 +339,27 @@ To configure permits to allow localhost to manage objects:
 
 Please provide suggestions and feedback on how to improve this :)
 
+Assuming the following:
+- a request object is present 
+- the host of the request is 'localhost' 
+- Permits::Configuration has been configured to allow localhost to manage objects:
+
+Then the user is allowed to manage all objects and no other Permits will be evaluated to restrict further.
+
+Note: In the code above, the built in <code>#localhost_manager?</code> method is used.
+
 ## Generators
 
 The gem comes with the following generators
 
-* cancan:permits
-* cancan:permit
-* cancan:licenses
-* cancan:license
+* cancan:permits - generate multiple permits
+* cancan:permit - generate a single permit
+* cancan:licenses - generate multiple licenses
+* cancan:license - generate a single license
 
 ## Permits Generator
+
+Generates one or more permits in _app/permits_
 
 Options
 * --orm             : The ORM to use (active_record, data_mapper, mongoid, mongo_mapper) - creates a Rails initializer
@@ -366,14 +371,17 @@ Options
 
 ### What does the generator generate?
 
-To get an understanding of what the generator generates for a Rails 3 application, try to run the spec permit_generator_spec.rb with rspec 2 as follows:
+To get an understanding of what the generator generates for a Rails 3 application, try to run the spec _permit_generator_spec.rb_ with _RSpec 2_ as follows:
 
-<code>$ rspec spec/generators/cancan/permits_generator_spec.rb</code>
-
-In the file <code>permits_generator_spec.rb</code> make the following change <code>config.remove_temp_dir = false</code>
+In the file _permits_generator_spec.rb_ make the following change <code>config.remove_temp_dir = false</code>
 This will prevent the rails /tmp dir from being deleted after the test run, so you can inspect what is generated in the Rails app. 
 
+Now run the generator spec to see the result:
+<code>$ rspec spec/generators/cancan/permits_generator_spec.rb</code>
+
 ## Licenses Generator
+
+Generates one or more licenses in _app/licenses_
 
 Options
 * --licenses    : The licenses to generate; default UserAdmin and Blogging licenses are generated
@@ -395,14 +403,18 @@ Create both specific and default licenses:
 
 ### What does the generator generate?
 
-To get an understanding of what the generator generates for a Rails 3 application, try to run the spec permit_generator_spec.rb with rspec 2 as follows:
+To get an understanding of what the generator generates for a Rails 3 application, try to run the spec _licenses_generator_spec.rb_ with rspec 2 as follows:
 
-<code>$ rspec spec/generators/cancan/licenses_generator_spec.rb</code>
-
-In the file <code>licenses_generator_spec.rb</code> make the following change <code>config.remove_temp_dir = false</code>
+In the file _licenses_generator_spec.rb_ make the following change <code>config.remove_temp_dir = false</code>
 This will prevent the rails /tmp dir from being deleted after the test run, so you can inspect what is generated in the Rails app. 
 
+Now run the generator spec to see the result:
+<code>$ rspec spec/generators/cancan/licenses_generator_spec.rb</code>
+
+
 ## License Generator
+
+Generates a single license in _app/licenses_
 
 <code>rails g cancan:license [NAME]</code>
 
@@ -420,7 +432,7 @@ Generate licenses:
 
 ## Permit Generator
 
-Generate a named permit
+Generates a single license in _app/permits_
 
 <code>rails g cancan:permit [ROLE]</code>
 
@@ -436,9 +448,9 @@ Generate licenses:
 
 <code>$ rails g cancan:permit editor --owns article post --read blog --licenses blog_editing</code>
 
-# TODO ?
+# TODO
 
-The Permits generator should attempt to attempt to uncover which roles are currently defined as available to the system (Generic Roles API, User#roles etc.) and generate permits for those roles. Any roles specified in the --roles option should be merged with the roles available in the app.
+The Permits generator should attempt to attempt to uncover which roles are currently defined as available to the system, trying Cream#available_roles and then User#roles. It could then generate permits for those roles. Any roles specified in the --roles option should be merged with the roles available in the app.
 
 ## Note on Patches/Pull Requests
  
