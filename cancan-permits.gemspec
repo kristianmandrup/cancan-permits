@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.3.6"
+  s.version = "0.3.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = %q{2010-11-30}
+  s.date = %q{2010-12-24}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -62,7 +62,9 @@ Gem::Specification.new do |s|
     "spec/active_record/owner_permits_spec.rb",
     "spec/active_record/permits_spec.rb",
     "spec/active_record/spec_helper.rb",
+    "spec/cancan-permits/license/save_license_spec.rb",
     "spec/cancan-permits/loader/config/licenses.yml",
+    "spec/cancan-permits/loader/config/permits.yml",
     "spec/cancan-permits/loader/config/user_permissions.yml",
     "spec/cancan-permits/loader/license_loader_spec.rb",
     "spec/cancan-permits/loader/permits_loader_spec.rb",
@@ -119,6 +121,7 @@ Gem::Specification.new do |s|
     "spec/active_record/owner_permits_spec.rb",
     "spec/active_record/permits_spec.rb",
     "spec/active_record/spec_helper.rb",
+    "spec/cancan-permits/license/save_license_spec.rb",
     "spec/cancan-permits/loader/license_loader_spec.rb",
     "spec/cancan-permits/loader/permits_loader_spec.rb",
     "spec/cancan-permits/loader/user_permissions_loader.rb",
@@ -173,7 +176,9 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<require_all>, ["~> 1.2.0"])
       s.add_runtime_dependency(%q<sugar-high>, ["~> 0.3.0"])
       s.add_runtime_dependency(%q<rails3_artifactor>, ["~> 0.3.1"])
+      s.add_runtime_dependency(%q<activemodel>, [">= 3.0.1"])
       s.add_runtime_dependency(%q<activesupport>, [">= 3.0.1"])
+      s.add_runtime_dependency(%q<activeresource>, [">= 3.0.1"])
       s.add_runtime_dependency(%q<logging_assist>, [">= 0.1.6"])
     else
       s.add_dependency(%q<rspec>, [">= 2.0.1"])
@@ -183,7 +188,9 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<require_all>, ["~> 1.2.0"])
       s.add_dependency(%q<sugar-high>, ["~> 0.3.0"])
       s.add_dependency(%q<rails3_artifactor>, ["~> 0.3.1"])
+      s.add_dependency(%q<activemodel>, [">= 3.0.1"])
       s.add_dependency(%q<activesupport>, [">= 3.0.1"])
+      s.add_dependency(%q<activeresource>, [">= 3.0.1"])
       s.add_dependency(%q<logging_assist>, [">= 0.1.6"])
     end
   else
@@ -194,7 +201,9 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<require_all>, ["~> 1.2.0"])
     s.add_dependency(%q<sugar-high>, ["~> 0.3.0"])
     s.add_dependency(%q<rails3_artifactor>, ["~> 0.3.1"])
+    s.add_dependency(%q<activemodel>, [">= 3.0.1"])
     s.add_dependency(%q<activesupport>, [">= 3.0.1"])
+    s.add_dependency(%q<activeresource>, [">= 3.0.1"])
     s.add_dependency(%q<logging_assist>, [">= 0.1.6"])
   end
 end
