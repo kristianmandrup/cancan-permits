@@ -74,11 +74,11 @@ module Permit
     end
 
     def can(action, subject, conditions = nil, &block)
-      can_definitions << CanCan::CanDefinition.new(true, action, subject, conditions, block)
+      can_definitions << rule_class.new(true, action, subject, conditions, block)
     end
         
     def cannot(action, subject, conditions = nil, &block)
-      can_definitions << CanCan::CanDefinition.new(false, action, subject, conditions, block)
+      can_definitions << rule_class.new(false, action, subject, conditions, block)
     end
     
     def owns(user, clazz, ownership_relation = :user_id, user_id_attribute = :id, strategy_used = nil)
@@ -105,6 +105,12 @@ module Permit
     end 
 
     protected  
+
+    # CanCan 1.5 compatibility
+    def rule_class
+      return CanCan::Rule if defined? CanCan::Rule
+      CanCan::CanDefinition
+    end
     
     include Permit::Util
 
