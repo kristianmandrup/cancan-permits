@@ -74,11 +74,11 @@ module Permit
     end
 
     def can(action, subject, conditions = nil, &block)
-      can_definitions << rule_class.new(true, action, subject, conditions, block)
+      rules << rule_class.new(true, action, subject, conditions, block)
     end
         
     def cannot(action, subject, conditions = nil, &block)
-      can_definitions << rule_class.new(false, action, subject, conditions, block)
+      rules << rule_class.new(false, action, subject, conditions, block)
     end
     
     def owns(user, clazz, ownership_relation = :user_id, user_id_attribute = :id, strategy_used = nil)
@@ -122,8 +122,19 @@ module Permit
       user.has_role? permit_name(self.class)
     end
       
-    def can_definitions
-      ability.send :can_definitions
+    def rules
+      return rules_1_5 if rules_1_5
+      return rules_1_4 if rules_1_4
+      raise "CanCan ability.rules could not be found. Possibly due to CanCan API change since 1.5"
     end    
+    
+    def rules_1_5
+      ability.send :rules
+    end
+
+    def rules_1_4
+      ability.send :can_definitions
+    end
+
   end
 end
