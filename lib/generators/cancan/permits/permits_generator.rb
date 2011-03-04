@@ -1,8 +1,8 @@
 require 'rails/generators/base'
 require 'sugar-high/array'
 require 'active_support/inflector'
-require 'rails3_artifactor'
-require 'logging_assist'
+require 'rails_artifactor'
+# require 'logging_assist'
 
 module Cancan
   module Generators
@@ -37,7 +37,7 @@ module Cancan
   
       protected
 
-      include Rails3::Assist::BasicLogger
+      # include Rails3::Assist::BasicLogger
       extend Rails3::Assist::UseMacro
   
       use_helpers :app, :file, :special
