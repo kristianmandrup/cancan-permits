@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "cancan-permits.gemspec",
     "lib/cancan-permits.rb",
     "lib/cancan-permits/license/base_license.rb",
     "lib/cancan-permits/loader/permission_config.rb",
