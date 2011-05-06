@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cancan-permits}
-  s.version = "0.3.11"
+  s.version = "0.3.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Kristian Mandrup"]
-  s.date = %q{2011-03-04}
+  s.authors = [%q{Kristian Mandrup}]
+  s.date = %q{2011-05-06}
   s.description = %q{Role specific Permits for use with CanCan permission system}
   s.email = %q{kmandrup@gmail.com}
   s.extra_rdoc_files = [
@@ -109,8 +109,8 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/kristianmandrup/cancan-permits}
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.1}
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.0}
   s.summary = %q{Permits for use with CanCan}
   s.test_files = [
     "spec/active_record/migrations/001_create_user.rb",
