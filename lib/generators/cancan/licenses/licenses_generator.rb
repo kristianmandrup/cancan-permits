@@ -26,7 +26,7 @@ module Cancan
   
       protected
 
-      # include Rails3::Assist::BasicLogger
+      # include RailsAssist::BasicLogger
 
       attr_accessor :license_name
 

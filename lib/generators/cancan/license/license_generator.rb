@@ -27,7 +27,7 @@ module Cancan
   
       protected
 
-      # include Rails3::Assist::BasicLogger
+      # include RailsAssist::BasicLogger
 
       def creates
         options[:creates]

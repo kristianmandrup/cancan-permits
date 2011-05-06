@@ -3,8 +3,8 @@ require 'rails-app-spec'
 module RSpec::RubyContentMatchers 
   module LicenseFile  
     class HaveLicenseFile
-      include ::Rails3::Assist::Artifact::Directory
-      include ::Rails3::Assist::Directory
+      include ::RailsAssist::Artifact::Directory
+      include ::RailsAssist::Directory
       
       attr_reader :name
   
@@ -42,8 +42,8 @@ module RSpec::RubyContentMatchers
     end
 
     class HaveLicenseFiles
-      include ::Rails3::Assist::Artifact::Directory
-      include ::Rails3::Assist::Directory
+      include ::RailsAssist::Artifact::Directory
+      include ::RailsAssist::Directory
       
       attr_reader :names
   
