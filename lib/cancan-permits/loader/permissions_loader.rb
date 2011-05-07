@@ -57,7 +57,7 @@ class PermissionsLoader
   protected
 
   def self.get_config_file name
-    File.join(::Rails.root, 'config', "#{name}.yml") if rails?
+    File.join(::Rails.root.to_s, 'config', "#{name}.yml") if rails?
   end
   
   def self.rails?

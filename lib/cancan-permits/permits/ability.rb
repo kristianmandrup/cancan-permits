@@ -2,6 +2,8 @@ require 'cancan-permits/permit/util'
 
 module Permits
   class Ability
+    class NoAvailableRoles < StandardError; end
+    
     include CanCan::Ability
 
      class << self
@@ -23,17 +25,22 @@ module Permits
     def self.permits ability, options = {}
       special_permits = []
       special_permits << [:system, :any].map{|role| make_permit(role, ability, options)}
-      role_permits = Permits::Roles.available.inject([]) do |permits, role|
+      
+      raise NoAvailableRoles, "Permits::Roles method #available returns no roles" if !available_roles || available_roles.empty?
+
+      role_permits = available_roles.inject([]) do |permits, role|
         permit = make_permit(role, ability, options)
         permits << permit if permit
       end
       
-      # puts "Role permits: #{role_permits}"
-      
+      # puts "Role permits: #{role_permits}"      
       all_permits = (special_permits + role_permits).flatten.compact
-      # 
       # puts "All permits: #{all_permits}"
       # all_permits      
+    end
+
+    def self.available_roles
+      Permits::Roles.available
     end
 
     def initialize user, options = {}

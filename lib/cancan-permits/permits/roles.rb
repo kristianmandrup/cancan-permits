@@ -1,7 +1,7 @@
 module Permits::Roles
   def self.available
     if defined? ::Cream
-      Cream.available_roles
+      Cream::Role.available
     elsif defined? ::User
       User.roles
     else
