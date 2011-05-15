@@ -10,14 +10,16 @@ class PermissionConfig
   # can(:manage, :all)
   # cannot(:update, [User, Profile]) 
   def can_eval &block
+    return nil if !can
     statements = [:manage, :read, :update, :create, :write].map do |action|
-      targets = can[action]
+      targets = can[action.to_s]
       targets ? "can(:#{action}, #{parse_targets(targets)})" : nil
     end.compact.join("\n")
     yield statements if !statements.empty? && block
   end
 
-  def can_eval &block
+  def cannot_eval &block
+    return nil if !cannot
     statements = [:manage, :read, :update, :create, :write].map do |action|
       targets = cannot[action]
       targets ? "cannot(:#{action}, #{parse_targets(targets)})" : nil
@@ -28,10 +30,10 @@ class PermissionConfig
   def parse_targets targets
     targets.map do |target|
       if target == 'all'
-        ':all'
+        :all
       else
         begin
-          "#{target.constantize}"
+          target #.constantize
         rescue
           puts "[permission] target #{target} does not have a class so it was skipped"
         end
