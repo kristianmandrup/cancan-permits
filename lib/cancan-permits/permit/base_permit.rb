@@ -6,7 +6,7 @@ module Permit
     attr_reader :ability
     attr_reader :strategy # this can be used to customize the strategy used by owns to determine ownership, fx to support alternative ORMs 
 
-    attr_reader :user_permissions
+    attr_reader :user_permissions, :role_permissions
 
     def licenses *names
       names.to_strings.each do |name|         
@@ -31,32 +31,32 @@ module Permit
     end
 
     def load_role_rules
-      return if !role_permissions || role_permissions.empty?
-      name ||= self.class.to_s.gsub(/Permit$/, "").underscore.to_sym
+      return if !role_permissions || role_permissions.permissions.empty?
+      name ||= self.class.to_s.gsub(/Permit$/, "").underscore.to_s #ym
             
-      role_permissions[name].can_statement do |permission_statement|
-        instance_eval permission_statement
-      end
+      return if role_permissions.permissions[name].nil?
 
-      role_permissions[name].cannot_statement do |permission_statement|
+      role_permissions.permissions[name].can_eval do |permission_statement|
+        instance_eval permission_statement
+      end 
+      role_permissions.permissions[name].cannot_eval do |permission_statement|
         instance_eval permission_statement
       end
     end
 
     def load_user_rules user 
-      return if !user_permissions || user_permissions.empty?
+      return if !user_permissions || user_permissions.permissions.empty?
       raise "#load_user_rules expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
 
       id = user.email
-      return nil if id.strip.empty?
+      return nil if id.strip.empty? || user_permissions.permissions[id].nil?
 
-      user_permissions[id].can_statement do |permission_statement|
+      user_permissions.permissions[id].can_eval do |permission_statement|
         instance_eval permission_statement
-      end
-
-      user_permissions[id].cannot_statement do |permission_statement|
+      end 
+      user_permissions.permissions[id].cannot_eval do |permission_statement|
         instance_eval permission_statement
-      end
+      end 
     end
        
     def initialize ability, options = {}
