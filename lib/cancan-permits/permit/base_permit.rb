@@ -28,6 +28,7 @@ module Permit
     def load_rules user
       load_role_rules
       load_user_rules user
+      load_categories
     end
 
     def load_role_rules
@@ -42,6 +43,14 @@ module Permit
       role_permissions.permissions[name].cannot_eval do |permission_statement|
         instance_eval permission_statement
       end
+    end
+
+    def load_categories
+      raise '#load_categories needs to be implemented'
+
+      return if !categories
+
+      # retrieve from Rails cache
     end
 
     def load_user_rules user 
@@ -66,9 +75,11 @@ module Permit
       @role_permissions = ::PermissionsLoader.load_permits options[:permits_file]
     end
 
+    # Add role_group_match check?
     def permit?(user, options = {})
       if options == :in_role 
-        return true if !role_match? user 
+        # not sure what this is!?
+        return true if !(role_match?(user) || role_group_match?(user))
       end
       false
     end
@@ -121,6 +132,11 @@ module Permit
     def role_match? user
       user.has_role? permit_name(self.class)
     end
+
+    def role_group_match? user, group_name
+      user.is_in_group? permit_name(self.class)
+    end
+
       
     def rules
       return rules_1_5 if rules_1_5

@@ -1,10 +1,11 @@
-bloggers:
+# this file references categories of items
+blogging:
   can:
     manage:
       - Article
       - Post
 
-publishers:
+publishing:
   can:
     manage:
       - @articles

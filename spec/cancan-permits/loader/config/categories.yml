@@ -1,4 +1,1 @@
-categories:
-  articles:
-    - Article
-    - Post
+articles: [Article, Post]

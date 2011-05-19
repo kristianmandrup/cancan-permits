@@ -1,8 +1,11 @@
 class PermissionConfig
   attr_accessor :name, :can, :cannot  
-  
-  def initialize name
+  attr_accessor :categories
+
+  # categories - a CategoriesConfig instance from after loading categories file  
+  def initialize name, categories = {}
     @name = name
+    @categories = categories
   end  
 
   # Should take @can={"manage"=>["all"]}, @cannot={"update"=>["User", "Profile"]}
@@ -26,11 +29,16 @@ class PermissionConfig
     end.compact.join("\n")
     yield statements if !statements.empty? && block
   end
-  
+
+  # should be able to target categories
   def parse_targets targets
     targets.map do |target|
-      if target == 'all'
+      case target.to_s
+      when 'all'
         :all
+      when /^@(s+)/ # a category       
+        category = target.gsub(/^@/, '').to_sym
+        categories.category_of_subject(category) # get models referenced by category
       else
         begin
           target #.constantize

@@ -112,6 +112,27 @@ end
 Alternatively you can use <code>return if !super user, :in_role</code> to exit if the user doesn't have a role that matches the Permit.
 This will in effect execute the same test. 
 
+Permit for Role group:
+
+Permit example:
+<pre>class BloggersPermit < Permit::Base
+  def initialize(ability, options = {})
+    super
+  end
+
+  def permit?(user, options = {})    
+    return if !role_group_match? user    
+
+    can(:read, Blog)
+    can(:manage, Article)
+    owns(user, Post)        
+  end  
+end
+</pre>
+
+Here the name of the Role group 'Bloggers' is used as the prefix in the class name. In the #permit? method the #role_group_match? is used to ensure the permissions
+are only granted if the user is a member of this group.
+
 _Ownership permission:_
 
 The _owns_ call is a special built-in way to define ownership permission. The #_owns_ call can also pe used inside Permits. 
