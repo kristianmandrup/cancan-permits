@@ -1,0 +1,23 @@
+h1. Design ideas
+
+"Custom actions linked to objects":https://github.com/kristianmandrup/cream/issues/23
+
+I think that in the cream/cancan world, what you try to achieve would require custom actions and "action groups" IMO.
+So an _:admin_ license could be defined that allow _:publish_ and _:maintain_ actions (custom defined actions) to be applied on a certain kinds of objects (Classes). A Role can be granted this license through a Permit and a user be granted this role.
+Then apply the following access logic:
+
+<pre>
+can? :administrate, Project do
+...
+can? :publish, Project do
+   # publish section
+end
+
+can? :maintain, Project do
+   # maintenance section
+end
+
+end 
+</pre>
+
+Then _:administrate_ could somehow be set up to point to a group of actions, in this case _:publish_ and _:maintain_ actions and the can? _:administrate_ test should only be valid if the user _can?_ both _:publish_ and _:maintain_ the object. Nice! 

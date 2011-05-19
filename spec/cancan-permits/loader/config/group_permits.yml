@@ -1,0 +1,5 @@
+editors: # a role group
+  can:
+    manage:
+      - @articles
+      - Letter

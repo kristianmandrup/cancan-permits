@@ -1,0 +1,14 @@
+bloggers:
+  can:
+    manage:
+      - Article
+      - Post
+
+publishers:
+  can:
+    manage:
+      - @articles
+  cannot:
+    manage:
+      - User
+

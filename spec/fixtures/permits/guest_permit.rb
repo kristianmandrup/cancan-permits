@@ -16,9 +16,11 @@ class GuestPermit < Permit::Base
     
     # a user can manage comments he/she created
     # can :manage, Comment do |comment|
-    #   comment.try(:user) == user
+    #   (comment.try(:user)  == current_user) || (comment.try(:author) == current_user)
     # end            
     
     # can :create, Comment
   end  
 end
+
+
