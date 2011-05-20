@@ -18,14 +18,23 @@ module Permit
       executor(user, options).execute!
     end
 
-    # Alternatively you can use 
+    # In a specific Role based Permit you can use 
+    #   def permit? user, options = {}
+    #     return if !super(user, :in_role)
+    #     ... permission logic follows
     #
-    #   return if !super user, :in_role
+    # This will call the Permit::Base#permit? instance method (the method below)
+    # It will only return true if the user matches the role of the Permit class and the
+    # options passed in is set to :in_role
     #
-    # in order to exit if the user doesn't have a role that matches the Permit.
+    # If these confitions are not met, it will return false and thus the outer permit 
+    # will not run the permission logic to follow
     #
-    def permit?(user, options = {})
-      :break if !user_role_match? user, options
+    # Normally super for #permit? should not be called except for this case, 
+    # or if subclassing another Permit than Permit::Base
+    #
+    def permit? user, options = {}   
+      any_role_match?(user) && options == :in_role
     end
 
     # where and how is this used???
@@ -67,8 +76,8 @@ module Permit
       @strategy ||= options[:strategy] || Permits::Ability.strategy || :default
     end
 
-    def user_role_match?
-      (role_match?(user) || role_group_match?(user)) && options == :in_role
+    def any_role_match? user
+      role_match?(user) || role_group_match?(user)
     end
 
     # return the executor used to execute the permit
