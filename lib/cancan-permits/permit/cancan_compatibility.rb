@@ -1,3 +1,4 @@
+# ensures compatibility with CanCan 1.5+ and 1.4-
 module Permit               
   module CanCanCompatibility
     def rules

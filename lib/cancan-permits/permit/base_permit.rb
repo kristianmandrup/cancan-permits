@@ -2,12 +2,33 @@ require 'cancan-permits/permit/util'
 require 'sugar-high/array'
 
 module Permit
-  class Base 
-    attr_reader :ability
-    attr_reader :strategy # this can be used to customize the strategy used by owns to determine ownership, fx to support alternative ORMs 
+  class Base           
+    attr_reader :ability, :options
+    # strategy is used to control the owns strategy (see rules.rb)
+    attr_reader :strategy 
 
-    attr_reader :user_permissions, :role_permissions
+    # creates the permit
+    def initialize ability, options = {}
+      @ability  = ability
+      @options  = options
+    end
+       
+    # executes the permit
+    def execute user, options
+      executor(user, options).execute!
+    end
 
+    # Alternatively you can use 
+    #
+    #   return if !super user, :in_role
+    #
+    # in order to exit if the user doesn't have a role that matches the Permit.
+    #
+    def permit?(user, options = {})
+      :break if !user_role_match? user, options
+    end
+
+    # where and how is this used???
     def licenses *names
       names.to_strings.each do |name|         
         begin
@@ -24,35 +45,33 @@ module Permit
         end
       end
     end
-       
-    def initialize ability, options = {}
-      @ability  = ability
-      @strategy = options[:strategy] || Permits::Ability.strategy || :default      
-
-      @user_permissions = ::PermissionsLoader.load_user_permissions options[:user_permissions_file]
-      @role_permissions = ::PermissionsLoader.load_permits options[:permits_file]
-      
-      configure_executor
-    end
-
-    def execute user, options
-      executor(user, options).execute!
-    end
-
-    # Add role_group_match check?
-    def permit?(user, options = {})
-      if options == :in_role 
-        # not sure what this is!?
-        return true if !(role_match?(user) || role_group_match?(user))
-      end
-      false
-    end
 
     include Permit::Rules
     include Permit::Loaders
 
+    def user_permissions
+      @user_permissions ||= permits_loader.load_user_permissions options[:user_permissions_file]
+    end
+
+    def role_permissions
+      @role_permissions ||= permits_loader.load_permits options[:permits_file]
+    end
+    
     protected  
 
+    def permits_loader
+      Permits::Loader::Permissions
+    end
+
+    def strategy
+      @strategy ||= options[:strategy] || Permits::Ability.strategy || :default
+    end
+
+    def user_role_match?
+      (role_match?(user) || role_group_match?(user)) && options == :in_role
+    end
+
+    # return the executor used to execute the permit
     def executor 
       @executor ||= Permit::Executor.new self
     end

@@ -7,9 +7,9 @@ module Permits
     def initialize user, options = {}
       # put ability logic here!
       user ||= Guest.create      
-
+      # run permit executors
       all_permits(options).each do |permit|
-        permit.execute user, options
+        break if permit.execute(user, options) == :break
       end
     end      
 

@@ -1,4 +1,11 @@
+# if using cancan-permits standalone, you can do the following
+#
+# Permits::Roles.role_groups = [:bloggers, :admins]
+# 
+# Otherwise set the available role groups up either on the User class or in Cream using the Cream#config method
+#
 module Permits::Roles
+  # class level accessors
   mattr_accessor :role_groups, :roles
   
   def self.available_role_groups
@@ -21,3 +28,4 @@ module Permits::Roles
     end
   end
 end
+

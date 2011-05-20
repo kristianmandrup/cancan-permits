@@ -15,16 +15,19 @@ module Permit
 
     protected
     
-    def special_permits
-      [] << [:system, :any].map{|role| make_permit(role, ability, options)}
+    def make_special_permits
+      [] << special_permits.map{|role| make_permit(role)}
     end    
 
-    def role_permits 
-      (available_roles + available_role_groups).inject([]) do |permits, role|
-        permit = make_permit(role, ability, options)
-        permits << permit if permit
-      end
+    def make_role_permits 
+      all_available_roles.inject([]) do |permits, role|
+        permits << make_permit(role)
+      end.compact
     end    
+
+    def all_available_roles
+      available_roles + available_role_groups
+    end
     
     def available_roles
       Permits::Roles.available_roles
@@ -41,6 +44,8 @@ module Permit
         raise "Error instantiating Permit instance for #{permit_clazz}, cause #{e}"
       end
     end                  
+    
+    private
 
     def permit_clazz role
       get_permit role
@@ -53,7 +58,11 @@ module Permit
       rescue
         raise "Permit #{clazz_name} not loaded and thus not defined"
       end
-    end        
+    end
+    
+    def special_permits
+      [:system, :any]
+    end    
   end
 end
 
