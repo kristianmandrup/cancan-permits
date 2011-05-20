@@ -2,10 +2,10 @@ module Permit
   class Builder
     class NoAvailableRoles < StandardError; end
     
-    attr_accessor :permit, :ability, :options
+    attr_accessor :ability
 
-    def initialize permit, ability, options = {}
-      @permit, @ability, @options = [permit, ability, options]
+    def initialize ability
+      @ability = ability
     end
 
     def build!
@@ -14,6 +14,10 @@ module Permit
     end
 
     protected
+
+    def options
+      ability.options
+    end
     
     def make_special_permits
       [] << special_permits.map{|role| make_permit(role)}

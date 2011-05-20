@@ -1,5 +1,5 @@
-require 'cancan-permits/permit/util'
 require 'sugar-high/array'
+require_all File.dirname(__FILE__)
 
 module Permit
   class Base           
