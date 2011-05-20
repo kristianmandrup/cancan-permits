@@ -39,7 +39,6 @@ class PermissionsLoader
     PermissionsLoader.new name
   end
  
-  def self.load_categories
   def self.permits_config_file
     # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails
     get_config_file 'permits'
