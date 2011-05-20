@@ -133,10 +133,9 @@ module Permit
       user.has_role? permit_name(self.class)
     end
 
-    def role_group_match? user, group_name
+    def role_group_match? user, group_name = nil
       user.is_in_group? permit_name(self.class)
     end
-
       
     def rules
       return rules_1_5 if rules_1_5

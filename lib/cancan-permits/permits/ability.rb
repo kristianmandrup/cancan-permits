@@ -28,7 +28,7 @@ module Permits
       
       raise NoAvailableRoles, "Permits::Roles method #available returns no roles" if !available_roles || available_roles.empty?
 
-      role_permits = available_roles.inject([]) do |permits, role|
+      role_permits = (available_roles + [:bloggers]).inject([]) do |permits, role|
         permit = make_permit(role, ability, options)
         permits << permit if permit
       end
@@ -50,6 +50,7 @@ module Permits
       all_permits.each do |permit|
         # get role name of permit 
         permit_role = permit_name(permit.class)
+        puts "permit_role: #{permit_role}"
         if permit_role == :system
           # always execute system permit
           result = permit.permit?(user, options)
@@ -58,6 +59,9 @@ module Permits
           # only execute the permit if the user has the role of the permit or is for any role
           if user.has_role?(permit_role) || permit_role == :any
             permit.permit?(user, options) 
+          end
+          if permit_role == :bloggers && user.is_in_group?(:bloggers)
+            permit.permit?(user, options)
           end
         end
       end
