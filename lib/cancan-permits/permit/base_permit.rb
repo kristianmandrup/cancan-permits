@@ -6,7 +6,7 @@ module Permit
     attr_reader :ability
     attr_reader :strategy # this can be used to customize the strategy used by owns to determine ownership, fx to support alternative ORMs 
 
-    attr_reader :user_permissions, :role_permissions
+    attr_reader :user_permissions, :role_permissions, :categories
 
     def licenses *names
       names.to_strings.each do |name|         
