@@ -24,6 +24,11 @@ h2. Status update: May 20, 2011
 
 Cancan-permits have undergone major refactoring in the *major-refactor* branch. Please help out to make this gem much better and implement the ideas presented here.
 
+h2. You need help?
+
+Please post ideas, questions etc. in the "cancan-permits":http://groups.google.com/group/cancan-permits group on Google.
+Inf you encounter bugs, raise an issue or even better: branch off, do the fix and make a pull request. Thanks!
+
 h2. Rails 3 configuration
 
 Note: This description does not apply to how CanCan-permits is used with "Cream":https://github.com/kristianmandrup/cream
