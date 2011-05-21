@@ -1,26 +1,32 @@
-# CanCan Permits
+h1. CanCan Permits
 
-Role specific Permits for use with [CanCan](http://github.com/ryanb/cancan) permission system.
+Role specific Permits for use with "CanCan":http://github.com/ryanb/cancan authorization system.
 
-## Install
+h2. Install
 
-<code>gem install cancan-permits</code>
+@gem install cancan-permits@
 
-## Usage Rails 3 app
+h2. Usage in a Rails 3 app
 
-Gemfile
-<code>gem 'cancan-permits'</code>
+Insert into Gemfile
 
-Update gem bundle in terminal:
-<code>$ bundle install</code>
+@gem 'cancan-permits'@
+
+Run bundler to bundle gems in the app
+
+@$ bundle install@
 
 See Generator section below. 
 
-See [CanCan permits demo app](https://github.com/kristianmandrup/cancan-permits-demo) for more info on how to set up a Rails 3 app with CanCan permits!
+See "CanCan permits demo app":https://github.com/kristianmandrup/cancan-permits-demo for more info on how to set up a Rails 3 app with CanCan permits!
 
-## Rails 3 configuration
+h2. Status update: May 20, 2011
 
-Note: This description does not apply to how CanCan-permits is used with [Cream](https://github.com/kristianmandrup/cream)
+Cancan-permits have undergone major refactoring in the *major-refactor* branch. Please help out to make this gem much better and implement the ideas presented here.
+
+h2. Rails 3 configuration
+
+Note: This description does not apply to how CanCan-permits is used with "Cream":https://github.com/kristianmandrup/cream
 
 Create a rails initializer with the following code:
 
@@ -45,56 +51,55 @@ Modify the User model in 'models/user.rb' (optional)
 end
 </pre>
 
-## Permits configuration
+h2. Permits configuration
 
-Permits can be configured [using permits configuration files](https://github.com/kristianmandrup/cancan-permits/wiki/Using-permits-configuration-files)
+Permits can be configured "using permits configuration files":https://github.com/kristianmandrup/cancan-permits/wiki/Using-permits-configuration-files
+Note that configuration files for categories (of objects) and role groups are now also supported.
 
-### Users, roles and permissions
+h3. Users, roles and permissions
 
-_CanCan permits_ requires that you have some kind of 'role system' in place and that _User#has_role?_ returns whether the user has a given role (pass role argument as symbol or string). You can either add a 'role' directly to the _User_ class or fx use a [Roles Generic](https://github.com/kristianmandrup/roles_generic) role strategy.
+_CanCan permits_ requires that you have some kind of 'role system' in place and that _User#has_role?_ returns whether the user has a given role (pass role argument as symbol or string). You can either add a 'role' directly to the _User_ class or fx use a "Roles Generic":https://github.com/kristianmandrup/roles_generic role strategy.
 
-## Application configuration for CanCan Permits
+h2. Application configuration for CanCan Permits
 
 * Define roles that Users can have
 * Define which roles are available
 * Define a Permit for each role. 
 * For each Permit, define what Users with a role matching the permit can do
 
-To add roles to your app, you might consider using a *roles* gem such as [Roles Generic](http://github.com/kristianmandrup/roles_generic) or any of the ORM specific variants.
+To add roles to your app, you might consider using a *roles* gem such as "Roles Generic":http://github.com/kristianmandrup/roles_generic or any of the ORM specific variants.
 
-CanCan permits is integrated with [CanCan REST links](https://github.com/kristianmandrup/cancan-rest-links), letting you easily control which users have access to which models in your app.
+CanCan permits is integrated with "CanCan REST links":https://github.com/kristianmandrup/cancan-rest-links, letting you easily control which users have access to which models in your app.
 
-Note that [Cream](https://github.com/kristianmandrup/cream) has a _full_config_ generator that automatically configures all this for you in a standard configuration which integrates all the various parts (and even supports multiple ORMs) !!!
+Note that "Cream":https://github.com/kristianmandrup/cream has a _full_config_ generator that automatically configures all this for you in a standard configuration which integrates all the various parts (and even supports multiple ORMs) !!!
 
-### Define which roles are available
+h3. Define which roles are available
 
 _CanCan permits_ uses the following strategy to discover which roles are available in the app.
 
 Default configuration:
 <pre>module Permits::Roles
-  def self.available
-    if defined? ::Cream
-      Cream.available_roles
-    elsif defined? ::User
-      User.roles
-    else
-      [:admin, :guest]
-    end
+  def self.available_roles
+    ...
+  end
+  
+  def self.available_role_groups
+    ...
   end
 end
 </pre>
 
-_CanCan permits_ will first try to assume it is used with Cream. If not it will fallback to try and get the roles from User#roles. 
-If all else fails, it will assume only the :guest and :admin roles are available. 
+_CanCan permits_ will first try to assume it is used with Cream. If not it will fallback to try and get the available roles from the User model. 
+If all else fails, it will assume some defaults. 
 
 You can always monkeypatch this configuration implementation to suit your own needs.
 
-### Define a Permit for each Role. 
+h3. Define a Permit for each Role. 
 
 You can use the _Permits generator_ to generate your permits. Permits should be placed in the app/permits folder.
 
 Permit example:
-<pre>class AdminPermit < Permit::Base
+<pre>class AdminPermit < RolePermit::Base
   def initialize(ability, options = {})
     super
   end
@@ -102,30 +107,43 @@ Permit example:
   def permit?(user, options = {})    
     return if !role_match? user    
 
-    can(:read, Blog)
-    can(:manage, Article)
-    owns(user, Post)        
+    can  :read, Blog
+    can  :manage, Article
+    owns user, Post        
   end  
 end
 </pre>
 
-Alternatively you can use <code>return if !super user, :in_role</code> to exit if the user doesn't have a role that matches the Permit.
-This will in effect execute the same test. 
+Note:
+The call @owns user, Post@ looks ugly. I would prefer a DSL more like @user.owns Post@. 
+It should be possible to easily have Class of the role subject (user) include a method #owns which can perform the owns check (TODO). 
 
-Permit for Role group:
+Alternatively you can use return if @!super user, :in_role@ to exit if the user doesn't have a role that matches the Permit.
+This will in effect execute the same test. Here also, we could envision that the user class include a method #in_role? which given a permit determines if it has that role.
+@user.in_role? self@ where self is the permit.
+
+Note however that in most cases you don't need this line to break out from the #permit? method. The latest design assumes that you only want to run the Permits
+for the role and role groups of the role subject (the user) 
+
+h3. TODO
+
+Code should rename user to role_subject. 
+The method #role_list should return all roles of the role_subject, including those of the user's role_groups (should be cached list).
+
+h3. Permit for Role group
 
 Permit example:
-<pre>class BloggersPermit < Permit::Base
-  def initialize(ability, options = {})
+<pre>class BloggersPermit < RoleGroupPermit::Base
+  def initialize ability, options = {}
     super
   end
 
-  def permit?(user, options = {})    
-    return if !role_group_match? user    
+  def permit? user, options = {}
+    # return if !role_group_match? user    
 
-    can(:read, Blog)
-    can(:manage, Article)
-    owns(user, Post)        
+    can  :read, Blog
+    can  :manage, Article
+    owns user, Post
   end  
 end
 </pre>
@@ -133,17 +151,17 @@ end
 Here the name of the Role group 'Bloggers' is used as the prefix in the class name. In the #permit? method the #role_group_match? is used to ensure the permissions
 are only granted if the user is a member of this group.
 
-_Ownership permission:_
+h3. Ownership permission
 
 The _owns_ call is a special built-in way to define ownership permission. The #_owns_ call can also pe used inside Permits. 
 If a user owns an object instance that user will automatically have :manage permissions to that object instance.
 
-### Special permits
+h3.Special permits
 
-The Permits system uses some [special permits](https://github.com/kristianmandrup/cancan-permits/wiki/Special-permits) that can be configured for
+The Permits system uses some "special permits":https://github.com/kristianmandrup/cancan-permits/wiki/Special-permits that can be configured for
 avanced permission scenarios as described in the wiki.
 
-### Licenses
+h2. Licenses
 
 Permits support creation of more fine-grained permits through the use of _Licenses_.  
 Licenses are a way to group logical fragments of permission statements to be reused across multiple Permits.
@@ -166,14 +184,12 @@ end
 
 Licenses usage example:
 <pre>class GuestPermit < Permit::Base
-    def initialize(ability, options = {})
+    def initialize ability, options = {}
       super
     end
 
-    def permit?(user, options = {}) 
-      super    
-      return if !role_match? user
-
+    def permit? user, options = {}
+      # return if !role_match? user
       licenses :user_admin, :blogging
     end
   end
@@ -182,13 +198,11 @@ end
 
 The permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and then call _#enforce!_ on each license.
 
-## Using Permits with an ORM
+h2. Using Permits with an ORM
 
 The easiest option is to directly set the orm as a class variable. An appropriate 'ownership strategy' will be selected accordingly for the ORM. 
 
-<pre>
-  Permits::Ability.orm = :data_mapper
-</pre>
+@Permits::Ability.orm = :data_mapper@
 
 The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
 
@@ -201,37 +215,37 @@ All the other ORMs use the :string ownership strategy,
 Note: You can dive into the code and implement your own strategy if needed.
 
 Setting the ownership strategy directly:
-<pre>ability = Permits::Ability.new(@editor, :strategy => :string)</pre>
 
-## Advanced Permit options
+@ability = Permits::Ability.new(@editor, :strategy => :string)@
+
+h2. Advanced Permit options
 
 Note that the options hash (second argument of the initializer) can also be used to pass custom data for the permission system to use to determine whether an action
 should be permitted. An example use of this is to pass in the HTTP request object. This approach is used in the default SystemPermit generated.
 
 The ability would most likely be configured with the current request in a view helper or directly from within the controller.
 
-<code>editor_ability = Permits::Ability.new(@editor, :request => request)</code>
+@editor_ability = Permits::Ability.new @editor, :request => request@
 
 A Permit can then use this extra information
 
 Advanced #permit? functionality:  
-<pre>def permit?(user, options = {}) 
+<pre>def permit? user, options = {}
   request = options[:request]
   if request && request.host.localhost? && localhost_manager?
-    can(:manage, :all) 
+    can :manage, :all
     return :break
   end    
 end  
 </pre>
 
-### Configuring global management permission for localhost
+h2. Configuring global management permission for localhost
 
 The Permits system allows a global setting in order to allow localhost to manage all objects. This can be useful in development or administration mode. 
 
 To configure permits to allow localhost to manage objects:
-<code>
-  Permits::Configuration.localhost_manager = true
-</code>
+
+@Permits::Configuration.localhost_manager = true@
 
 Assuming the following:
 - a request object is present 
@@ -240,11 +254,11 @@ Assuming the following:
 
 Then the user is allowed to manage all objects and no other Permits will be evaluated to restrict further.
 
-Note: In the code above, the built in <code>#localhost_manager?</code> method is used.
+Note: In the code above, the built in @#localhost_manager?@ method is used.
 
 _Please provide suggestions and feedback on how to improve this :)_
 
-## Generators
+h2. Generators
 
 The gem comes with the following generators
 
@@ -253,9 +267,9 @@ The gem comes with the following generators
 * cancan:licenses - generate multiple licenses
 * cancan:license - generate a single license
 
-The generators are described in detail [here](https://github.com/kristianmandrup/cancan-permits/wiki/Permits-and-License-generators)
+See "Permits and License generators":https://github.com/kristianmandrup/cancan-permits/wiki/Permits-and-License-generators
 
-## Note on Patches/Pull Requests
+h2. Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -265,6 +279,6 @@ The generators are described in detail [here](https://github.com/kristianmandrup
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-## Copyright
+h2. Copyright
 
 Copyright (c) 2010 Kristian Mandrup. See LICENSE for details.

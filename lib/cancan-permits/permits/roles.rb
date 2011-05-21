@@ -6,7 +6,7 @@
 #
 module Permits::Roles
   # class level accessors
-  mattr_accessor :role_groups, :roles
+  mattr_accessor :role_groups, :roles, :default_available_roles
   
   def self.available_role_groups
     if defined? ::Cream
@@ -24,8 +24,16 @@ module Permits::Roles
     elsif defined? ::User
       User.roles
     else
-      roles || [:admin, :guest]
+      roles || default_available_roles
     end
+  end
+
+  def self.default_available_roles
+    @default_available_roles ||= [:admin, :guest]
+  end
+
+  def self.default_available_role_groups
+    @default_available_role_groups ||= []
   end
 end
 
