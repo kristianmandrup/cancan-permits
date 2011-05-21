@@ -269,6 +269,179 @@ The gem comes with the following generators
 
 See "Permits and License generators":https://github.com/kristianmandrup/cancan-permits/wiki/Permits-and-License-generators
 
+h1. Design overview
+
+The starting point is *Permits:Ability* (see permits/ability.rb)
+The _Permits::Ability#initialize_ method takes the user (or role_subject) to evaluate permissions on and optionally some options (which can include the Request object etc.)
+This initializer is more or less equivalent to the CanCan _Ability#initialize_ method which also executes the permission logic.
+The difference is the following code, which instead iterates over all the roles of the user and for each role executes an instance of the corresponding permit (using convention of Permit class name). 
+
+_Permits::Ability#initialize_
+
+<pre>
+  # run permit executors
+  permits_for(user).each do |permit|
+    # execute the permit and break only if the execution returns the special :break symbol
+    break if permit.execute(user, options) == :break
+  end  
+</pre>
+
+Each permit has a permit executor (see _permit/executor_ folder) according to its base class (see fx permit_base.rb, the #execute and #executor methods). 
+To build each permit, the permit builder is used (see permits/builder folder). 
+The whole permits construct should NOT be rebuilt and reevaluated for each authorization! 
+Please see caching idea under the section _'Design considerations'_ below, in this document. Please help out to improve this!
+
+The /license folder holds all the code license related code. The /loader, /parser and /configuration folders hold the code to load YAML files for static configuration of permits and licenses (currently only using yaml files).  
+
+h1. Design considerations
+
+Here are some design considerations for improvement:
+
+h2. Better Role Group design
+
+Each user should be able to join different groups, hence the need for a #role_groups column or a separate RoleGroup model with table similar to the functionality of role.
+
+When a user joins a role_group, he could automatically be given the roles of that group, but what if he then is taken out of that group? Then we can't simply delete those same roles, as he might have had that role individually before. Bad idea!
+
+Better then to just evaluate the role groups dynamically on demand. Later we could cache this result (fx by storing array of roles in the datastore), then invalidate the cache result for that user whenever his relationships with a role or role group changes, using event triggers? Note: We won't have support for nested role groups!
+
+<pre>
+  # when any role group changes which roles are in it
+  on_role_group_change
+    find all users referencing that group and update their cache result
+
+  # whenever a role group is added or removed for a user
+  on_add_user_role_group user
+    # update roles of group to user (merge into Set)
+
+  on_remove_user_role_group user
+    # update cache of user
+
+  on_remove_user_role user
+    # update cache of user # can't simply remove role, since might be part of a group
+
+  on_add_user_role user
+    # add role to cache (merge into Set)  
+</pre>
+
+h2. Caching of roles_list for each user
+
+From the cancan-permits code:
+
+<pre>
+module License
+  class Base
+    attr_reader :permit, :licenses
+    
+    def initialize permit, licenses_file = nil
+      @permit = permit
+      @licenses = ::PermissionsLoader.load_licenses licenses_file
+    end
+</pre>
+
+So the licenses are only loaded when a Permit is initialized, but...
+
+<pre><code>
+module Permits
+  class Ability
+    def initialize user, options = {}
+      # put ability logic here!
+      user ||= Guest.create
+      all_permits = Permits::Ability.permits(self, options)
+...
+
+    # set up each Permit instance to share this same Ability 
+    # so that the can and cannot operations work on the same permission collection!
+    def self.permits ability, options = {}
+         ...     
+        permit = make_permit(role, ability, options)
+        permits << permit if permit
+
+    def self.make_permit role, ability, options = {}
+      begin            
+        permit_clazz = get_permit role
+        permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
+</code></pre>
+
+So any time a _Permits::Ability_ instance is created, the whole shebang is loaded, which is any time the permission is checked (see cream source!).
+
+Instead, this _Permits::Ability_ object should be cached and only reloaded when a license file changes.
+
+http://guides.rubyonrails.org/caching_with_rails.html
+
+1) *ActiveSupport::Cache::MemoryStore*: A cache store implementation which stores everything into memory in the same process. If you’re running multiple Ruby on Rails server processes (which is the case if you’re using mongrel_cluster or Phusion Passenger), then this means that your Rails server process instances won’t be able to share cache data with each other. If your application never performs manual cache item expiry (e.g. when you‘re using generational cache keys), then using MemoryStore is ok. Otherwise, consider carefully whether you should be using this cache store.
+
+MemoryStore is not only able to store strings, but also arbitrary Ruby objects. 
+
+ActionController::Base.cache_store = :memory_store
+
+Then cache like this:
+
+<pre>
+Rails.cache.write("permits", @permits)
+Rails.cache.read("permits")
+</pre>
+
+Also see: http://railscasts.com/episodes/115-caching-in-rails-2-1
+
+*Advanced Caching*
+
+Along with the built-in mechanisms outlined above, a number of excellent plugins exist to help with finer grained control over caching. These include Chris Wanstrath’s excellent cache_fu plugin (more info here ) and Evan Weaver’s interlock plugin (more info here ). Both of these plugins play nice with memcached and are a must-see for anyone seriously considering optimizing their caching needs.
+
+Also the new Cache money plugin is supposed to be mad cool.
+
+## Then how do we invalidate the Permits Ability cache?
+
+After a change to the file, read the time last modified of the file (or timestamp of key in filestore?)
+
+<pre>Rails.cache.read("permits-changed")</pre>
+
+Then compare the dates? is the file more recent?
+
+<pre>Rails.cache.write("permits-last-changed", time_changed)</pre>
+
+And then regenerate the Permits::Ability object and save it to the cache again! 
+
+<pre>
+@permits = Permits::Ability.new ....
+Rails.cache.write("permits", @permits)
+</pre>
+
+I think this could work!
+
+h2. More static configuration 
+
+For the Group licenses to work, I propose something like this:
+
+Group Models of similar kind of "type" (that often have shared permission)
+<pre>
+# categories.yml
+categories:
+  articles:
+    - Article
+    - Post 
+</pre>
+
+group_licenses.yml
+<pre>
+bloggers:
+  can:
+    manage:
+      - Article
+      - Post
+
+publishers:
+  can:
+    manage:
+      - @articles
+  cannot:
+    manage:
+      - User
+</pre>
+
+Note here the special *@articles* which should point to a category in the _categories.yml_ file. 
+Then we just need to add the logic to use/apply this new meta logic (partly done!).
+
 h2. Note on Patches/Pull Requests
  
 * Fork the project.
