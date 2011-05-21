@@ -27,7 +27,10 @@ Cancan-permits have undergone major refactoring in the *major-refactor* branch. 
 h2. You need help?
 
 Please post ideas, questions etc. in the "cancan-permits":http://groups.google.com/group/cancan-permits group on Google.
-Inf you encounter bugs, raise an issue or even better: branch off, do the fix and make a pull request. Thanks!
+Inf you encounter bugs, raise an issue or even better: branch off, do the fix and make a pull request. Thanks!  
+
+If you have questions and/or ideas related to roles, please post in the "rails-roles":http://groups.google.com/group/rails-roles group or 
+see the "roles generic":https://github.com/kristianmandrup/roles_generic project.
 
 h2. Rails 3 configuration
 
@@ -301,6 +304,11 @@ The /license folder holds all the code license related code. The /loader, /parse
 h1. Design considerations
 
 Here are some design considerations for improvement:
+
+h2. Privileges
+
+The "roles":https://github.com/zdennis/roles/wiki/Rails project, has a role model where users can assign other users the privilege to perform a certain action.
+Could we somehow integrate this privilege model into the current design and does that make sense?
 
 h2. Better Role Group design
 
