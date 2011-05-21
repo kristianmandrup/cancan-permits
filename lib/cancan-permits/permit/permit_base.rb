@@ -1,6 +1,8 @@
 require 'sugar-high/array'
 require_all File.dirname(__FILE__)
 
+# The permit base class for both Role Permits and Role Group Permits
+# Should contain all common logic
 module Permit
   class Base           
     attr_reader :ability, :options
@@ -34,7 +36,7 @@ module Permit
     # or if subclassing another Permit than Permit::Base
     #
     def permit? user, options = {}   
-      any_role_match?(user) && options == :in_role
+      false
     end
 
     # where and how is this used???
