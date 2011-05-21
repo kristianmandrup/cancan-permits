@@ -16,7 +16,8 @@ module Permits
       @options = options
 
       # run permit executors
-      all_permits.each do |permit|
+      permits_for(user).each do |permit|
+        # execute the permit and break only if the execution returns the special :break symbol
         break if permit.execute(user, options) == :break
       end
     end      
@@ -24,13 +25,34 @@ module Permits
     protected
 
     include Permit::Util
-    
-    def all_permits
-      permits
+
+    # by default, only execute permits for which the user 
+    # has a role or a role group
+    # also execute any permit marked as special
+    def permits_for user
+      special_permits + role_permits_for(user) + role_group_permits_for(user)
+    end
+
+    def special_permits
+      Permits::Configuration.special_permits
     end
     
-    def permits
-      permit_builder.build!
+    def role_group_permits_for user
+      permit_builder.build_role_group_permits_for role_groups_of(user)
+    end
+    
+    def role_permits_for user
+      permit_builder.build_role_permits_for roles_of(user)
+    end
+
+    # return list of symbols for roles the user has
+    def roles_of user
+      user.roles_list
+    end
+
+    # return list of symbols for role groups the user belongs to
+    def role_groups_of user
+      user.role_groups_list
     end
 
     def permit_builder
