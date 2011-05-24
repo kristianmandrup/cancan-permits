@@ -1,0 +1,470 @@
+h1. CanCan Permits
+
+Role specific Permits for use with "CanCan":http://github.com/ryanb/cancan authorization system.
+
+h2. Install
+
+@gem install cancan-permits@
+
+h2. Usage in a Rails 3 app
+
+Insert into Gemfile
+
+@gem 'cancan-permits'@
+
+Run bundler to bundle gems in the app
+
+@$ bundle install@
+
+See Generator section below. 
+
+See "CanCan permits demo app":https://github.com/kristianmandrup/cancan-permits-demo for more info on how to set up a Rails 3 app with CanCan permits!
+
+h2. Status update: May 20, 2011
+
+Cancan-permits have undergone major refactoring in the *major-refactor* branch. Please help out to make this gem much better and implement the ideas presented here.
+
+h2. You need help?
+
+Please post ideas, questions etc. in the "cancan-permits":http://groups.google.com/group/cancan-permits group on Google.
+Inf you encounter bugs, raise an issue or even better: branch off, do the fix and make a pull request. Thanks!  
+
+If you have questions and/or ideas related to roles, please post in the "rails-roles":http://groups.google.com/group/rails-roles group or 
+see the "roles generic":https://github.com/kristianmandrup/roles_generic project.
+
+h2. Rails 3 configuration
+
+Note: This description does not apply to how CanCan-permits is used with "Cream":https://github.com/kristianmandrup/cream
+
+Create a rails initializer with the following code:
+
+<pre>module Cream
+  # specify all roles available in your app!
+  def self.available_roles
+    [:guest, :admin]
+  end
+end  
+</pre>
+
+Modify the User model in 'models/user.rb' (optional)
+
+<pre>class User
+  def self.roles
+    Cream.available_roles
+  end   
+  
+  def has_role? role
+    (self.role || 'guest').to_sym == role.to_sym
+  end       
+end
+</pre>
+
+h2. Permits configuration
+
+Permits can be configured "using permits configuration files":https://github.com/kristianmandrup/cancan-permits/wiki/Using-permits-configuration-files
+Note that configuration files for categories (of objects) and role groups are now also supported.
+
+h3. Users, roles and permissions
+
+_CanCan permits_ requires that you have some kind of 'role system' in place and that _User#has_role?_ returns whether the user has a given role (pass role argument as symbol or string). You can either add a 'role' directly to the _User_ class or fx use a "Roles Generic":https://github.com/kristianmandrup/roles_generic role strategy.
+
+h2. Application configuration for CanCan Permits
+
+* Define roles that Users can have
+* Define which roles are available
+* Define a Permit for each role. 
+* For each Permit, define what Users with a role matching the permit can do
+
+To add roles to your app, you might consider using a *roles* gem such as "Roles Generic":http://github.com/kristianmandrup/roles_generic or any of the ORM specific variants.
+
+CanCan permits is integrated with "CanCan REST links":https://github.com/kristianmandrup/cancan-rest-links, letting you easily control which users have access to which models in your app.
+
+Note that "Cream":https://github.com/kristianmandrup/cream has a _full_config_ generator that automatically configures all this for you in a standard configuration which integrates all the various parts (and even supports multiple ORMs) !!!
+
+h3. Define which roles are available
+
+_CanCan permits_ uses the following strategy to discover which roles are available in the app.
+
+Default configuration:
+<pre>module Permits::Roles
+  def self.available_roles
+    ...
+  end
+  
+  def self.available_role_groups
+    ...
+  end
+end
+</pre>
+
+_CanCan permits_ will first try to assume it is used with Cream. If not it will fallback to try and get the available roles from the User model. 
+If all else fails, it will assume some defaults. 
+
+You can always monkeypatch this configuration implementation to suit your own needs.
+
+h3. Define a Permit for each Role. 
+
+You can use the _Permits generator_ to generate your permits. Permits should be placed in the app/permits folder.
+
+Permit example:
+<pre>class AdminPermit < RolePermit::Base
+  def initialize(ability, options = {})
+    super
+  end
+
+  def permit?(user, options = {})    
+    return if !role_match? user    
+
+    can  :read, Blog
+    can  :manage, Article
+    owns user, Post        
+  end  
+end
+</pre>
+
+Note:
+The call @owns user, Post@ looks ugly. I would prefer a DSL more like @user.owns Post@. 
+It should be possible to easily have Class of the role subject (user) include a method #owns which can perform the owns check (TODO). 
+
+Alternatively you can use return if @!super user, :in_role@ to exit if the user doesn't have a role that matches the Permit.
+This will in effect execute the same test. Here also, we could envision that the user class include a method #in_role? which given a permit determines if it has that role.
+@user.in_role? self@ where self is the permit.
+
+Note however that in most cases you don't need this line to break out from the #permit? method. The latest design assumes that you only want to run the Permits
+for the role and role groups of the role subject (the user) 
+
+h3. TODO
+
+Code should rename user to role_subject. 
+The method #role_list should return all roles of the role_subject, including those of the user's role_groups (should be cached list).
+
+h3. Permit for Role group
+
+Permit example:
+<pre>class BloggersPermit < RoleGroupPermit::Base
+  def initialize ability, options = {}
+    super
+  end
+
+  def permit? user, options = {}
+    # return if !role_group_match? user    
+
+    can  :read, Blog
+    can  :manage, Article
+    owns user, Post
+  end  
+end
+</pre>
+
+Here the name of the Role group 'Bloggers' is used as the prefix in the class name. In the #permit? method the #role_group_match? is used to ensure the permissions
+are only granted if the user is a member of this group.
+
+h3. Ownership permission
+
+The _owns_ call is a special built-in way to define ownership permission. The #_owns_ call can also pe used inside Permits. 
+If a user owns an object instance that user will automatically have :manage permissions to that object instance.
+
+h3.Special permits
+
+The Permits system uses some "special permits":https://github.com/kristianmandrup/cancan-permits/wiki/Special-permits that can be configured for
+avanced permission scenarios as described in the wiki.
+
+h2. Licenses
+
+Permits support creation of more fine-grained permits through the use of _Licenses_.  
+Licenses are a way to group logical fragments of permission statements to be reused across multiple Permits.
+
+You can use the _License generator_ to generate your licenses. Lincenses should be placed in the _app/licenses_ folder.
+
+License example:
+<pre>class BloggingLicense < License::Base
+  def initialize name
+    super
+  end
+
+  def enforce!
+    can(:read, Blog)
+    can(:create, Post)
+    owns(user, Post)
+  end
+end  
+</pre>
+
+Licenses usage example:
+<pre>class GuestPermit < Permit::Base
+    def initialize ability, options = {}
+      super
+    end
+
+    def permit? user, options = {}
+      # return if !role_match? user
+      licenses :user_admin, :blogging
+    end
+  end
+end
+</pre>
+
+The permits system will try to find a license named UserAdminLicense and BloggingLicense in this example and then call _#enforce!_ on each license.
+
+h2. Using Permits with an ORM
+
+The easiest option is to directly set the orm as a class variable. An appropriate 'ownership strategy' will be selected accordingly for the ORM. 
+
+@Permits::Ability.orm = :data_mapper@
+
+The ORMs currently supported (and tested) are :active_record, :data_mapper, :mongoid, :mongo_mapper
+
+For more fine grained control, you can set a :strategy option directly on the Ability instance. This way the ownership strategy is set explicitly.
+The current valid values are _:default_ and _:string_.
+
+The strategy option :string can be used for most ORMs. Setting _orm__ to _:active_record_ or _:generic_ makes use of the _:default_ strategy. 
+All the other ORMs use the :string ownership strategy,
+
+Note: You can dive into the code and implement your own strategy if needed.
+
+Setting the ownership strategy directly:
+
+@ability = Permits::Ability.new(@editor, :strategy => :string)@
+
+h2. Advanced Permit options
+
+Note that the options hash (second argument of the initializer) can also be used to pass custom data for the permission system to use to determine whether an action
+should be permitted. An example use of this is to pass in the HTTP request object. This approach is used in the default SystemPermit generated.
+
+The ability would most likely be configured with the current request in a view helper or directly from within the controller.
+
+@editor_ability = Permits::Ability.new @editor, :request => request@
+
+A Permit can then use this extra information
+
+Advanced #permit? functionality:  
+<pre>def permit? user, options = {}
+  request = options[:request]
+  if request && request.host.localhost? && localhost_manager?
+    can :manage, :all
+    return :break
+  end    
+end  
+</pre>
+
+h2. Configuring global management permission for localhost
+
+The Permits system allows a global setting in order to allow localhost to manage all objects. This can be useful in development or administration mode. 
+
+To configure permits to allow localhost to manage objects:
+
+@Permits::Configuration.localhost_manager = true@
+
+Assuming the following:
+- a request object is present 
+- the host of the request is 'localhost' 
+- Permits::Configuration has been configured to allow localhost to manage objects:
+
+Then the user is allowed to manage all objects and no other Permits will be evaluated to restrict further.
+
+Note: In the code above, the built in @#localhost_manager?@ method is used.
+
+_Please provide suggestions and feedback on how to improve this :)_
+
+h2. Generators
+
+The gem comes with the following generators
+
+* cancan:permits - generate multiple permits
+* cancan:permit - generate a single permit
+* cancan:licenses - generate multiple licenses
+* cancan:license - generate a single license
+
+See "Permits and License generators":https://github.com/kristianmandrup/cancan-permits/wiki/Permits-and-License-generators
+
+h1. Design overview
+
+The starting point is *Permits:Ability* (see permits/ability.rb)
+The _Permits::Ability#initialize_ method takes the user (or role_subject) to evaluate permissions on and optionally some options (which can include the Request object etc.)
+This initializer is more or less equivalent to the CanCan _Ability#initialize_ method which also executes the permission logic.
+The difference is the following code, which instead iterates over all the roles of the user and for each role executes an instance of the corresponding permit (using convention of Permit class name). 
+
+_Permits::Ability#initialize_
+
+<pre>
+  # run permit executors
+  permits_for(user).each do |permit|
+    # execute the permit and break only if the execution returns the special :break symbol
+    break if permit.execute(user, options) == :break
+  end  
+</pre>
+
+Each permit has a permit executor (see _permit/executor_ folder) according to its base class (see fx permit_base.rb, the #execute and #executor methods). 
+To build each permit, the permit builder is used (see permits/builder folder). 
+The whole permits construct should NOT be rebuilt and reevaluated for each authorization! 
+Please see caching idea under the section _'Design considerations'_ below, in this document. Please help out to improve this!
+
+The /license folder holds all the code license related code. The /loader, /parser and /configuration folders hold the code to load YAML files for static configuration of permits and licenses (currently only using yaml files).  
+
+h1. Design considerations
+
+Here are some design considerations for improvement:
+
+h2. Privileges
+
+The "roles":https://github.com/zdennis/roles/wiki/Rails project, has a role model where users can assign other users the privilege to perform a certain action.
+Could we somehow integrate this privilege model into the current design and does that make sense?
+
+h2. Better Role Group design
+
+Each user should be able to join different groups, hence the need for a #role_groups column or a separate RoleGroup model with table similar to the functionality of role.
+
+When a user joins a role_group, he could automatically be given the roles of that group, but what if he then is taken out of that group? Then we can't simply delete those same roles, as he might have had that role individually before. Bad idea!
+
+Better then to just evaluate the role groups dynamically on demand. Later we could cache this result (fx by storing array of roles in the datastore), then invalidate the cache result for that user whenever his relationships with a role or role group changes, using event triggers? Note: We won't have support for nested role groups!
+
+<pre>
+  # when any role group changes which roles are in it
+  on_role_group_change
+    find all users referencing that group and update their cache result
+
+  # whenever a role group is added or removed for a user
+  on_add_user_role_group user
+    # update roles of group to user (merge into Set)
+
+  on_remove_user_role_group user
+    # update cache of user
+
+  on_remove_user_role user
+    # update cache of user # can't simply remove role, since might be part of a group
+
+  on_add_user_role user
+    # add role to cache (merge into Set)  
+</pre>
+
+h2. Caching of roles_list for each user
+
+From the cancan-permits code:
+
+<pre>
+module License
+  class Base
+    attr_reader :permit, :licenses
+    
+    def initialize permit, licenses_file = nil
+      @permit = permit
+      @licenses = ::PermissionsLoader.load_licenses licenses_file
+    end
+</pre>
+
+So the licenses are only loaded when a Permit is initialized, but...
+
+<pre><code>
+module Permits
+  class Ability
+    def initialize user, options = {}
+      # put ability logic here!
+      user ||= Guest.create
+      all_permits = Permits::Ability.permits(self, options)
+...
+
+    # set up each Permit instance to share this same Ability 
+    # so that the can and cannot operations work on the same permission collection!
+    def self.permits ability, options = {}
+         ...     
+        permit = make_permit(role, ability, options)
+        permits << permit if permit
+
+    def self.make_permit role, ability, options = {}
+      begin            
+        permit_clazz = get_permit role
+        permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
+</code></pre>
+
+So any time a _Permits::Ability_ instance is created, the whole shebang is loaded, which is any time the permission is checked (see cream source!).
+
+Instead, this _Permits::Ability_ object should be cached and only reloaded when a license file changes.
+
+http://guides.rubyonrails.org/caching_with_rails.html
+
+1) *ActiveSupport::Cache::MemoryStore*: A cache store implementation which stores everything into memory in the same process. If you’re running multiple Ruby on Rails server processes (which is the case if you’re using mongrel_cluster or Phusion Passenger), then this means that your Rails server process instances won’t be able to share cache data with each other. If your application never performs manual cache item expiry (e.g. when you‘re using generational cache keys), then using MemoryStore is ok. Otherwise, consider carefully whether you should be using this cache store.
+
+MemoryStore is not only able to store strings, but also arbitrary Ruby objects. 
+
+ActionController::Base.cache_store = :memory_store
+
+Then cache like this:
+
+<pre>
+Rails.cache.write("permits", @permits)
+Rails.cache.read("permits")
+</pre>
+
+Also see: http://railscasts.com/episodes/115-caching-in-rails-2-1
+
+*Advanced Caching*
+
+Along with the built-in mechanisms outlined above, a number of excellent plugins exist to help with finer grained control over caching. These include Chris Wanstrath’s excellent cache_fu plugin (more info here ) and Evan Weaver’s interlock plugin (more info here ). Both of these plugins play nice with memcached and are a must-see for anyone seriously considering optimizing their caching needs.
+
+Also the new Cache money plugin is supposed to be mad cool.
+
+## Then how do we invalidate the Permits Ability cache?
+
+After a change to the file, read the time last modified of the file (or timestamp of key in filestore?)
+
+<pre>Rails.cache.read("permits-changed")</pre>
+
+Then compare the dates? is the file more recent?
+
+<pre>Rails.cache.write("permits-last-changed", time_changed)</pre>
+
+And then regenerate the Permits::Ability object and save it to the cache again! 
+
+<pre>
+@permits = Permits::Ability.new ....
+Rails.cache.write("permits", @permits)
+</pre>
+
+I think this could work!
+
+h2. More static configuration 
+
+For the Group licenses to work, I propose something like this:
+
+Group Models of similar kind of "type" (that often have shared permission)
+<pre>
+# categories.yml
+categories:
+  articles:
+    - Article
+    - Post 
+</pre>
+
+group_licenses.yml
+<pre>
+bloggers:
+  can:
+    manage:
+      - Article
+      - Post
+
+publishers:
+  can:
+    manage:
+      - @articles
+  cannot:
+    manage:
+      - User
+</pre>
+
+Note here the special *@articles* which should point to a category in the _categories.yml_ file. 
+Then we just need to add the logic to use/apply this new meta logic (partly done!).
+
+h2. Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+h2. Copyright
+
+Copyright (c) 2010 Kristian Mandrup. See LICENSE for details.

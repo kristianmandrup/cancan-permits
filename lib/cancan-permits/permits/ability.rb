@@ -1,65 +1,24 @@
 require 'cancan-permits/permit/util'
+require_all File.dirname(__FILE__) + '/builder'
 
 module Permits
-  class Ability
-    class NoAvailableRoles < StandardError; end
-    
+  class Ability    
     include CanCan::Ability
 
-     class << self
-       attr_accessor :orm, :strategy
-       
-       def orm= orm
-         @orm = orm 
-         case orm
-         when :active_record, :generic
-           @strategy = :default
-         else
-           @strategy = :string
-         end
-       end
-     end
+    attr_reader :options, :user
 
-    # set up each Permit instance to share this same Ability 
-    # so that the can and cannot operations work on the same permission collection!
-    def self.permits ability, options = {}
-      special_permits = []
-      special_permits << [:system, :any].map{|role| make_permit(role, ability, options)}
-      
-      raise NoAvailableRoles, "Permits::Roles method #available returns no roles" if !available_roles || available_roles.empty?
-
-      role_permits = available_roles.inject([]) do |permits, role|
-        permit = make_permit(role, ability, options)
-        permits << permit if permit
-      end
-      
-      # puts "Role permits: #{role_permits}"      
-      all_permits = (special_permits + role_permits).flatten.compact
-      # puts "All permits: #{all_permits}"
-      # all_permits      
-    end
-
-    def self.available_roles
-      Permits::Roles.available
-    end
-
+    # put ability logic here! 
+    # Equivalent to a CanCan Ability#initialize call 
+    # which executes all the permission logic
     def initialize user, options = {}
-      # put ability logic here!
-      user ||= Guest.create
-      all_permits = Permits::Ability.permits(self, options)
-      all_permits.each do |permit|
-        # get role name of permit 
-        permit_role = permit_name(permit.class)
-        if permit_role == :system
-          # always execute system permit
-          result = permit.permit?(user, options)
-          break if result == :break
-        else
-          # only execute the permit if the user has the role of the permit or is for any role
-          if user.has_role?(permit_role) || permit_role == :any
-            permit.permit?(user, options) 
-          end
-        end
+      @user = user
+      @user ||= Guest.create      
+      @options = options
+
+      # run permit executors
+      permits_for(user).each do |permit|
+        # execute the permit and break only if the execution returns the special :break symbol
+        break if permit.execute(user, options) == :break
       end
     end      
     
@@ -67,22 +26,37 @@ module Permits
 
     include Permit::Util
 
-    def self.get_permit role
-      begin            
-        clazz_name = "#{role.to_s.camelize}Permit"
-        clazz_name.constantize
-      rescue
-        raise "Permit #{clazz_name} not loaded and thus not defined"
-      end
+    # by default, only execute permits for which the user 
+    # has a role or a role group
+    # also execute any permit marked as special
+    def permits_for user
+      special_permits + role_permits_for(user) + role_group_permits_for(user)
+    end
+
+    def special_permits
+      Permits::Configuration.special_permits
     end
     
-    def self.make_permit role, ability, options = {}
-      begin            
-        permit_clazz = get_permit role
-        permit_clazz.new(ability, options) if permit_clazz && permit_clazz.kind_of?(Class)
-      rescue RuntimeError => e
-        raise "Error instantiating Permit instance for #{permit_clazz}, cause #{e}"
-      end
-    end          
+    def role_group_permits_for user
+      permit_builder.build_role_group_permits_for role_groups_of(user)
+    end
+    
+    def role_permits_for user
+      permit_builder.build_role_permits_for roles_of(user)
+    end
+
+    # return list of symbols for roles the user has
+    def roles_of user
+      user.roles_list
+    end
+
+    # return list of symbols for role groups the user belongs to
+    def role_groups_of user
+      user.role_groups_list
+    end
+
+    def permit_builder
+      @permit_builder ||= Permit::Builder.new self
+    end    
   end
 end      
