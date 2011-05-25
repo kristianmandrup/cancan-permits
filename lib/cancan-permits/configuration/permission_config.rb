@@ -1,5 +1,5 @@
 module Permits
-  module Configuration
+  class Configuration
     class Permissions
       attr_accessor :name, :can, :cannot  
       attr_accessor :categories

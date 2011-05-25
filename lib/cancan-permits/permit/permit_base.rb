@@ -5,14 +5,15 @@ require_all File.dirname(__FILE__)
 # Should contain all common logic
 module Permit
   class Base           
-    attr_reader :ability, :options
+    attr_reader :ability, :options, :type
     # strategy is used to control the owns strategy (see rules.rb)
     attr_reader :strategy 
 
     # creates the permit
-    def initialize ability, options = {}
+    def initialize ability, type, options = {}
       @ability  = ability
       @options  = options
+      @type = type
     end
        
     # executes the permit
@@ -83,8 +84,15 @@ module Permit
     end
 
     # return the executor used to execute the permit
-    def executor 
-      @executor ||= Permit::Executor.new self
+    def executor(user, options = {}) 
+      @executor ||= case type
+                    when :role 
+                      then Permit::BaseExecutor.new self, user, options
+                    when :system
+                      then Permit::SystemExecutor.new self, user, options
+                    else
+                      raise "Some other type (c) Stas"
+                    end
     end
     
     include Permit::Util
