@@ -20,7 +20,6 @@ module Permit
     end
 
     def build_role_group_permits_for groups
-      puts "Entered build_role_group_permits: #{groups}"
       groups.inject([]) do |permits, role|
         permits << make_permit(role)
       end.compact
@@ -51,13 +50,11 @@ module Permit
     private
 
     def permit_clazz role
-      puts "permit_class:role: #{role}"
       get_permit role
     end    
     
     def get_permit role
       begin            
-        puts "get_permit, :role: #{role}"
         clazz_name = "#{role.to_s.camelize}Permit"
         clazz_name.constantize
       rescue

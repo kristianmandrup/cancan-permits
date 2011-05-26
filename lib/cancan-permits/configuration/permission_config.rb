@@ -6,7 +6,6 @@ module Permits
 
       # categories - a CategoriesConfig instance from after loading categories file  
       def initialize name, categories = {}
-        puts "entered permission_config. name is: #{name}"
         @name = name
         @categories = categories
       end  
@@ -16,7 +15,6 @@ module Permits
       # can(:manage, :all)
       # cannot(:update, [User, Profile]) 
       def can_eval &block
-        puts "can_eval:"
         build_statements :can, &block
       end
 
@@ -26,12 +24,10 @@ module Permits
 
       # build the 'can' or 'cannot' statements to evaluate
       def build_statements method, &block
-        puts "permission_config#buildstatements. method is #{method}, #{method.class}. block is #{block}"
         return nil if !send(method)
         statements = [:manage, :read, :update, :create, :write].map do |action|
           # same as calling: can[action] or cannot[action]
           targets = send(method).send(:[], action.to_s)
-          puts "targets are: #{targets}"
           targets ? "#{method}(:#{action}, #{parse_targets(targets)})" : nil
         end.compact.join("\n")
         yield statements if !statements.empty? && block

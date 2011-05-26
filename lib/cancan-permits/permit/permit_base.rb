@@ -17,7 +17,6 @@ module Permit
        
     # executes the permit
     def execute user, options
-      puts "#execute on #{self.class}"
       executor(user, options).execute!
     end
 
@@ -53,7 +52,7 @@ module Permit
         begin
           clazz.new(self).enforce!
         rescue
-          #raise "License #{clazz} could not be enforced using #{self.inspect}"
+          raise "License #{clazz} could not be enforced using #{self.inspect}"
         end
       end
     end
@@ -91,7 +90,6 @@ module Permit
 
     # return the executor used to execute the permit
     def executor(user, options = {}) 
-      puts "My class name during execution is #{self.class.name}"
       @executor ||= case self.class.name
                     when /System/
                       then Permit::SystemExecutor.new self, user, options

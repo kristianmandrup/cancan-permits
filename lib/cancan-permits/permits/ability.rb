@@ -18,6 +18,7 @@ module Permits
       # run permit executors
       permits.each do |permit|
       #  # execute the permit and break only if the execution returns the special :break symbol
+        puts "Permit is: #{permit}"
         break if permit.execute(user, options) == :break
       end
     end      
@@ -28,7 +29,7 @@ module Permits
     # has a role or a role group
     # also execute any permit marked as special
     def permits
-      special_permits + role_permits + role_group_permits
+      special_permits + role_group_permits + role_permits
     end
 
     def special_permits

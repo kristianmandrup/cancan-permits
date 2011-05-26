@@ -4,7 +4,6 @@ module Permits
       attr_accessor :permissions, :file_name
   
       def initialize file    
-        puts "permissions_loader#initialize - file is #{file}"
         begin          
           self.file_name = file
           yml_content.each do |key, value|
