@@ -19,6 +19,13 @@ module Permit
       end.compact
     end
 
+    def build_role_group_permits_for groups
+      puts "Entered build_role_group_permits: #{groups}"
+      groups.inject([]) do |permits, role|
+        permits << make_permit(role, :role)
+      end.compact
+    end
+
     def build_special_permits
       make_special_permits
     end
@@ -34,23 +41,8 @@ module Permit
       [ make_permit(:any, :role), make_permit(:system, :system) ]
     end    
 
-    def all_available_roles
-      available_roles + available_role_groups
-    end
-    
-    def available_roles
-      Permits::Roles.available_roles
-    end    
-
-    def available_roles_for user
-      user.roles_list
-    end    
-
-    def available_role_groups
-      Permits::Roles.available_role_groups
-    end
-    
     def make_permit role, type
+      puts "make_permit: role: #{role}, type: #{type}"
       begin            
         permit_clazz(role).new(ability, type, options)
       rescue RuntimeError => e
@@ -61,11 +53,13 @@ module Permit
     private
 
     def permit_clazz role
+      puts "permit_class:role: #{role}"
       get_permit role
     end    
     
     def get_permit role
       begin            
+        puts "get_permit, :role: #{role}"
         clazz_name = "#{role.to_s.camelize}Permit"
         clazz_name.constantize
       rescue

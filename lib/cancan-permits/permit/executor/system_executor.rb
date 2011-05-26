@@ -1,5 +1,5 @@
 module Permit
-  class SystemExecutor 
+  class SystemExecutor < Executor 
     # always execute system permit
     def execute!
       permit?(user, options)

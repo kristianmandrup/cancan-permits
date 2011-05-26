@@ -6,6 +6,10 @@ module Permit
       @permit, @user, @options = [permit, user, options]
     end
 
+    def permit?(user, options)
+      permit.permit?(user, options) if permit
+    end
+
     def execute!
       raise "Must be implemented by subclass"
     end

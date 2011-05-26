@@ -5,6 +5,7 @@ module Permit
     end
 
     def role_group_match? user, group_name = nil
+      puts "role_group_match #{user}..."
       user.is_in_group? permit_name(self.class)
     end
   end

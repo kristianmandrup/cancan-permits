@@ -18,6 +18,7 @@ module Permit
        
     # executes the permit
     def execute user, options
+      puts "#execute on #{self.class}"
       executor(user, options).execute!
     end
 
@@ -79,6 +80,8 @@ module Permit
       @strategy ||= options[:strategy] || Permits::Ability.strategy || :default
     end
 
+    include Permit::RoleMatcher
+
     def any_role_match? user
       role_match?(user) || role_group_match?(user)
     end
@@ -96,7 +99,6 @@ module Permit
     end
     
     include Permit::Util
-    include Permit::RoleMatcher
     include Permit::CanCanCompatibility
   end
 end

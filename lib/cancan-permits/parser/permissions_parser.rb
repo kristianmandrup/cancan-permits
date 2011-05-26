@@ -5,7 +5,7 @@ module Permits
       end
 
       def parse(key, obj, &blk)
-        license = ::PermissionConfig.new key
+        license = Permits::Configuration::Permissions.new key
         case obj
         when Hash
           parse_permission(obj, license, &blk)
@@ -19,9 +19,11 @@ module Permits
 
       def parse_permission(obj, license, &blk)
         # Forget keys because I don't know what to do with them
+        puts "parse_permission. obj is #{obj.inspect}"
         obj.each do |key, value|   
           raise ArgumentError, "A CanCan license can only have the keys can: and cannot:" if ![:can, :cannot].include?(key.to_sym)
           license.send :"#{key}=", value
+          puts "license.can is #{license.can}"
         end
       end
     end

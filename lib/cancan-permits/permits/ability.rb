@@ -28,7 +28,7 @@ module Permits
     # has a role or a role group
     # also execute any permit marked as special
     def permits
-      special_permits + role_permits #+ role_group_permits_for(user)
+      special_permits + role_permits + role_group_permits
     end
 
     def special_permits
@@ -50,7 +50,8 @@ module Permits
 
     # return list of symbols for role groups the user belongs to
     def role_groups_of user
-      user.role_groups_list
+      #user.role_groups_list
+      [:bloggers, :administration]
     end
 
     def permit_builder
