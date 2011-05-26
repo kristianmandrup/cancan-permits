@@ -37,14 +37,12 @@ module Permit
     end
     
     def make_special_permits
-      #special_permits.map{|role| make_permit(role, :special)}
-      [ make_permit(:any, :role), make_permit(:system, :system) ]
+      special_permits.map{|role| make_permit(role, :special)}
     end    
 
-    def make_permit role, type
-      puts "make_permit: role: #{role}, type: #{type}"
+    def make_permit role
       begin            
-        permit_clazz(role).new(ability, type, options)
+        permit_clazz(role).new(ability, options)
       rescue RuntimeError => e
         raise "Error instantiating Permit instance for #{permit_clazz}, cause #{e}"
       end

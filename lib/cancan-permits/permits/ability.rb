@@ -50,8 +50,9 @@ module Permits
 
     # return list of symbols for role groups the user belongs to
     def role_groups_of user
-      #user.role_groups_list
-      [:bloggers, :administration]
+      groups = []
+      User.role_groups.map{|k,v| groups << k if user.has_any_role?(v)}
+      groups
     end
 
     def permit_builder

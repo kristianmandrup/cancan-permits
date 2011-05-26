@@ -4,7 +4,7 @@ require_all File.dirname(__FILE__)
 module RolePermit
   class Base < Permit::Base
     # creates the permit
-    def initialize ability, type, options = {}
+    def initialize ability, options = {}
       super
     end
        

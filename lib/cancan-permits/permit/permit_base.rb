@@ -10,10 +10,9 @@ module Permit
     attr_reader :strategy 
 
     # creates the permit
-    def initialize ability, type, options = {}
+    def initialize ability, options = {}
       @ability  = ability
       @options  = options
-      @type = type
     end
        
     # executes the permit
@@ -88,13 +87,12 @@ module Permit
 
     # return the executor used to execute the permit
     def executor(user, options = {}) 
-      @executor ||= case type
-                    when :role 
-                      then Permit::BaseExecutor.new self, user, options
-                    when :system
+      puts "My class name during execution is #{self.class.name}"
+      @executor ||= case self.class.name
+                    when /System/
                       then Permit::SystemExecutor.new self, user, options
-                    else
-                      raise "Some other type (c) Stas"
+                    else  
+                      Permit::BaseExecutor.new self, user, options
                     end
     end
     
