@@ -53,7 +53,7 @@ module Permit
         begin
           clazz.new(self).enforce!
         rescue
-          raise "License #{clazz} could not be enforced using #{self.inspect}"
+          #raise "License #{clazz} could not be enforced using #{self.inspect}"
         end
       end
     end
