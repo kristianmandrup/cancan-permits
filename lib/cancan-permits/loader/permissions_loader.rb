@@ -47,10 +47,18 @@ module Permits
 
         def load_permits name = nil
           name ||= permits_config_file
-          #PermissionsLoader.new name
           Permits::Loader::Permissions.new name
         end
- 
+        
+        def load_groups_permits name=nil
+          name ||= groups_permits_config_file
+          Permits::Loader::Permissions.new name
+        end
+
+        def groups_permits_config_file
+          get_config_file 'groups_permits'
+        end
+
         def permits_config_file
           # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails
           get_config_file 'permits'

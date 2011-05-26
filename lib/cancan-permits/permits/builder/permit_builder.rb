@@ -15,14 +15,14 @@ module Permit
 
     def build_role_permits_for roles
       roles.inject([]) do |permits, role|
-        permits << make_permit(role, :role)
+        permits << make_permit(role)
       end.compact
     end
 
     def build_role_group_permits_for groups
       puts "Entered build_role_group_permits: #{groups}"
       groups.inject([]) do |permits, role|
-        permits << make_permit(role, :role)
+        permits << make_permit(role)
       end.compact
     end
 
@@ -37,7 +37,7 @@ module Permit
     end
     
     def make_special_permits
-      special_permits.map{|role| make_permit(role, :special)}
+      special_permits.map{|role| make_permit(role)}
     end    
 
     def make_permit role

@@ -68,7 +68,11 @@ module Permit
     def role_permissions
       @role_permissions ||= permits_loader.load_permits options[:permits_file]
     end
-    
+   
+    def groups_permissions
+      @groups_permissions ||= permits_loader.load_groups_permits options[:groups_permits_file]
+    end
+
     protected  
 
     def permits_loader
