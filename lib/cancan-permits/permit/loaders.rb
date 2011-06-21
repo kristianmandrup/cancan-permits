@@ -3,7 +3,22 @@ module Permit
     def load_rules user
       load_role_rules
       load_user_rules user
-      load_categories
+      load_groups_rules
+      #load_categories
+    end
+
+    def load_groups_rules
+      return if !groups_permissions || groups_permissions.permissions.empty?
+      name ||= self.class.to_s.gsub(/Permit$/, "").underscore.to_s #ym
+        
+      return if groups_permissions.permissions[name].nil?
+
+      groups_permissions.permissions[name].can_eval do |permission_statement|
+        instance_eval permission_statement
+      end 
+      groups_permissions.permissions[name].cannot_eval do |permission_statement|
+        instance_eval permission_statement
+      end
     end
 
     def load_role_rules

@@ -1,5 +1,5 @@
 module License
-  class Rules
+  module Rules
     def can(action, subject, conditions = nil, &block)
       permit.can action, subject, conditions, &block
     end

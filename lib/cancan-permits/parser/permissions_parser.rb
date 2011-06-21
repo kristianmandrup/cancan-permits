@@ -5,7 +5,7 @@ module Permits
       end
 
       def parse(key, obj, &blk)
-        license = ::PermissionConfig.new key
+        license = Permits::Configuration::Permissions.new key
         case obj
         when Hash
           parse_permission(obj, license, &blk)

@@ -1,5 +1,5 @@
 module Permits
-  module Configuration
+  class Configuration
     class Permissions
       attr_accessor :name, :can, :cannot  
       attr_accessor :categories
@@ -27,7 +27,7 @@ module Permits
         return nil if !send(method)
         statements = [:manage, :read, :update, :create, :write].map do |action|
           # same as calling: can[action] or cannot[action]
-          targets = send(method).send([], action)
+          targets = send(method).send(:[], action.to_s)
           targets ? "#{method}(:#{action}, #{parse_targets(targets)})" : nil
         end.compact.join("\n")
         yield statements if !statements.empty? && block

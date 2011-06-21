@@ -5,7 +5,7 @@ module Permits
   
       def initialize file    
         begin          
-          file_name = file
+          self.file_name = file
           yml_content.each do |key, value|
             parser.parse(key, value) do |permission|
               permissions[permission.name] = permission
@@ -36,19 +36,28 @@ module Permits
       module ClassMethods
         def load_user_permissions name = nil
           name ||= user_permissions_config_file
-          PermissionsLoader.new name
+          Permits::Loader::Permissions.new name
         end
 
         def load_licenses name = nil
           name ||= licenses_config_file
-          PermissionsLoader.new name
+          Permits::Loader::Permissions.new name
         end
 
         def load_permits name = nil
           name ||= permits_config_file
-          PermissionsLoader.new name
+          Permits::Loader::Permissions.new name
         end
- 
+        
+        def load_groups_permits name=nil
+          name ||= groups_permits_config_file
+          Permits::Loader::Permissions.new name
+        end
+
+        def groups_permits_config_file
+          get_config_file 'groups_permits'
+        end
+
         def permits_config_file
           # raise '#user_permissions_config_file only works in a Rails app enviroment' if !defined? Rails
           get_config_file 'permits'

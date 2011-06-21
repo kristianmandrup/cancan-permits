@@ -1,7 +1,7 @@
 require 'sugar-high/array'
 require_all File.dirname(__FILE__)
 
-module RolePermit
+module RoleGroupPermit
   class Base  < Permit::Base           
 
     # creates the permit
@@ -11,7 +11,7 @@ module RolePermit
        
     # In a specific Role based Permit you can use 
     #   def permit? user, options = {}
-    #     return if !super(user, :in_role)
+    #     return if !super(user, :in_group)
     #     ... permission logic follows
     #
     # This will call the Permit::Base#permit? instance method (the method below)
@@ -25,7 +25,7 @@ module RolePermit
     # or if subclassing another Permit than Permit::Base
     #
     def permit? user, options = {}   
-      role_group_match?(user) && options == :in_role
+      role_group_match?(user) && options == :in_group
     end
   end
 end

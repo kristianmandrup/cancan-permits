@@ -5,7 +5,7 @@ require_all File.dirname(__FILE__)
 # Should contain all common logic
 module Permit
   class Base           
-    attr_reader :ability, :options
+    attr_reader :ability, :options, :type
     # strategy is used to control the owns strategy (see rules.rb)
     attr_reader :strategy 
 
@@ -67,7 +67,11 @@ module Permit
     def role_permissions
       @role_permissions ||= permits_loader.load_permits options[:permits_file]
     end
-    
+   
+    def groups_permissions
+      @groups_permissions ||= permits_loader.load_groups_permits options[:groups_permits_file]
+    end
+
     protected  
 
     def permits_loader
@@ -78,17 +82,23 @@ module Permit
       @strategy ||= options[:strategy] || Permits::Ability.strategy || :default
     end
 
+    include Permit::RoleMatcher
+
     def any_role_match? user
       role_match?(user) || role_group_match?(user)
     end
 
     # return the executor used to execute the permit
-    def executor 
-      @executor ||= Permit::Executor.new self
+    def executor(user, options = {}) 
+      @executor ||= case self.class.name
+                    when /System/
+                      then Permit::SystemExecutor.new self, user, options
+                    else  
+                      Permit::BaseExecutor.new self, user, options
+                    end
     end
     
     include Permit::Util
-    include Permit::RoleMatcher
     include Permit::CanCanCompatibility
   end
 end

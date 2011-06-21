@@ -3,12 +3,12 @@ module Permit
     # execute the permit
     def execute!
       role_execution
-      role_group_execution
+      #role_group_execution
     end
 
     # only execute the permit if the user has the role of the permit or is for any role      
     def role_execution
-      permit?(user, options) if permit_for_user_role?
+      permit?(user, options) if permit_for_user_role? || permit_for_user_group?
     end
 
     def permit_for_user_role? 
