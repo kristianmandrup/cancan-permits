@@ -72,6 +72,10 @@ module AdminUser
 end  
 </pre>
 
+Note: 
+The functionality to try loading different modules in a specific order (precedence) is available from the class_ext package in sugar-high and is also used in _troles_.
+Simply: @require 'sugar-high/class_ext'@ and then: @try_modules(module1, module2)@ or @try_class@ for classes. See spec in _sugar-high_ for usage details ;)
+
 This will be the role Permit for the :admin role of the Admin user account.
 
 
