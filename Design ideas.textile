@@ -20,4 +20,258 @@ end
 end 
 </pre>
 
-Then _:administrate_ could somehow be set up to point to a group of actions, in this case _:publish_ and _:maintain_ actions and the can? _:administrate_ test should only be valid if the user _can?_ both _:publish_ and _:maintain_ the object. Nice! 
+Then _:administrate_ could somehow be set up to point to a group of actions, in this case _:publish_ and _:maintain_ actions and the can? _:administrate_ test should only be valid if the user _can?_ both _:publish_ and _:maintain_ the object. 
+
+h2. More design ideas
+
+At its core, _cancan-permits_ overrides the current_ability method of CanCan to provide its own role based permission logic, while reusing the CanCan can functionality.
+
+Instead of instantiating a single global Ability class to provide the permissions, cancan-permits instead instantiates a list of _RolePermit_ classes, each linked to a given role of the user in question. Each RolePermit class then includes the cancan logic by being initialized with the cancan ability.
+
+<pre>
+  module Permits
+   class Ability    
+     include CanCan::Ability
+
+     def initialize user, options = {}
+       @user = user
+       @user ||= Guest.create      
+       @options = options
+
+       # run permit executors
+       permits_for(user).each do |permit|
+         # execute the permit and break only if the execution returns the special :break symbol
+         break if permit.execute(user, options) == :break
+       end
+     end      
+
+     def permit_builder
+       @permit_builder ||= Permit::Builder.new self
+     end    
+  ...  
+</pre>
+
+The _Permits::Ability_ acts similar to a _CanCan::Ability_ and is initialized with a user and some extra optional options (request object etc. can be put here)
+
+Here the _permits_for(user)_ should first try to find a Role for the user account which the user is currently logged in on (currently active). The Permits can be namespaced
+under a UserAccount module, fx:
+
+<pre>
+module AdminUser
+  class AdminPermit < RolePermit::Base
+   def initialize(ability, options = {})
+     super
+   end
+
+   def permit?(user, options = {})        
+     can  :read, Blog
+     can  :manage, Article
+     owns user, Post        
+   end  
+  end  
+end  
+</pre>
+
+This will be the role Permit for the :admin role of the Admin user account.
+
+
+
+The statement include _CanCan::Ability_ includes the following into the Permits::Ability and hence into the RolePermit being built.
+
+<pre>
+  class CanCan::Ability
+
+  def can?(action, subject, *extra_args)
+   match = relevant_rules_for_match(action, subject).detect do |rule|
+      rule.matches_conditions?(action, subject, extra_args)
+    end
+    match ? match.base_behavior : false
+  end
+
+  def cannot?(*args)
+   !can?(*args)
+  end
+
+  def can(action = nil, subject = nil, conditions = nil, &block)
+   rules << Rule.new(true, action, subject, conditions, block)
+  end
+
+  def cannot(action = nil, subject = nil, conditions = nil, &block)
+   rules << Rule.new(false, action, subject, conditions, block)
+  end
+
+  #   alias_action :update, :destroy, :to => :modify
+  #   can :modify, Comment
+  #
+  # This way one can use params[:action] in the controller to determine the
+  # permission.
+
+  def alias_action(*args)
+   target = args.pop[:to]
+    aliased_actions[target] ||= []
+    aliased_actions[target] += args
+  end
+
+  # Returns a hash of aliased actions. The key is the target and the value is an
+  # array of actions aliasing the key.
+
+  def aliased_actions
+    @aliased_actions ||= default_alias_actions
+  end  
+</pre>
+
+
+The builder instantiates the RolePermit for the given role of the user and initializes it with the ability and options.
+
+<pre>
+  module Permit
+   class Builder    
+     attr_accessor :ability
+
+     def initialize ability
+       @ability = ability
+     end
+  ...
+
+     def make_permit role
+       begin            
+         permit_clazz(role).new(ability, options)
+  ...  
+</pre>
+
+
+Each RolePermit inherits from RolePermit::Base
+
+<pre>
+  class AdminPermit < RolePermit::Base
+   def initialize(ability, options = {})
+     super
+   end
+
+   def permit?(user, options = {})        
+     can  :read, Blog
+     can  :manage, Article
+     owns user, Post        
+   end  
+  end  
+</pre>
+
+h3. Ownership rule
+
+Note that the @owns(user, Post)@ is not a very elegant or intuitive DSL.
+We should change this into:
+
+<pre>
+  owner_of(:posts).can [:read, :edit]
+  manager_of(:posts).can [:read, :edit]  
+</pre>
+
+The methods #owner_of and #manager_of will be managed by a #method_missing handler which will then make the can call; something like this:
+
+@can([:read, :edit], :posts, :owner => user.id)@
+
+The ownership test then becomes:
+
+@post.owner => user.id@
+
+We should be able to alias concepts like this
+
+@alias_concept :owner => [:author, :manager]@
+
+Which would then result in a test on each to determine ownership
+
+<pre>
+  post.owner
+  post.author
+  post.manager  
+</pre> 
+
+If any of these calls match the user tested, the rule passes.
+Furthermore, it would be nice if it could also handle something like this:
+
+<pre>
+  post.owned_by?(user)
+  post.owner?(user)  
+</pre>
+
+How: Just remove the “er” ending and substitute with “ed” and make the call!
+
+@owner_of(:posts).can [:read, :edit]@
+
+The implementation should handle all the above functionality and make all these calls if the methods are available in order to test this relationship.
+
+h3. Role- and RoleGroup Permits
+
+The base classes _RolePermit::Base_ and _RoleGroupPermit::Base_ both inherit from _Permit::Base_ which defines Permit base functionality.
+
+<pre>
+  module Permit
+   class Base           
+     include Permit::Rules
+  ...  
+</pre>
+
+_Permit::Base_ includes _Permit::Rules_ which override the can and cannot provided by _CanCan::Ability_.
+
+<pre>
+  module Permit               
+   module Rules
+     def can(action, subject, conditions = nil, &block)
+       rules << rule_class.new(true, action, subject, conditions, block)
+     end
+
+     def cannot(action, subject, conditions = nil, &block)
+       rules << rule_class.new(false, action, subject, conditions, block)
+     end
+
+     def owns(user, clazz, ownership_relation = :user_id, user_id_attribute = :id, strategy_used = nil)  
+</pre>
+
+
+This was previously done for compatibility reasons to work with CanCan <= 1.5
+
+<pre>
+  module Permit               
+   module Util
+     # CanCan 1.5 compatibility
+     def rule_class
+       return CanCan::Rule if defined? CanCan::Rule
+       CanCan::CanDefinition
+     end  
+</pre>
+
+We should assume developers use a later version of CanCan and thus this is not needed anymore!
+
+h3. Performance Optimization via Caching
+
+The current cancan-permits is pretty good, except it takes a heavy toll to perform all the permission logic of all role permits each time a user is authorized. The roles or role groups of a user would rarely change in real life, thus it would make sense to cache the result somehow.
+
+As we can see, the can and cannot only work to update a rules object:
+
+<pre>
+  def can(action, subject, conditions = nil, &block)
+   rules << rule_class.new(true, action, subject, conditions, block)
+  end  
+</pre>
+
+This rules object could be cached for each _RolePermit_.
+
+<pre>
+  def permit?(user, options = {})
+   if cached_permit_rules?(user, options)
+     cached_permit_rules(user, options)
+   else
+     permit_rules!(user, options)
+   end
+  end
+
+  def permit_rules!(user, options)
+     can  :read, Blog
+     can  :manage, Article
+     owns user, Post # use alternative DSL form!        
+     cache_rules(user, options) # or call to super which does the call?
+  end  
+</pre>
+
+
+A cache key in the form of a hash could then be generated for the user/options combination.

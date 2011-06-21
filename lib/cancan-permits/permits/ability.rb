@@ -22,7 +22,7 @@ module Permits
       end
     end      
     
-    protected
+    protected                                                                  
 
     include Permit::Util
 
