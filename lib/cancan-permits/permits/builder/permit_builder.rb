@@ -1,11 +1,14 @@
+require 'sugar-high/class_ext'
 module Permit
   class Builder
+    include ClassExt
     class NoAvailableRoles < StandardError; end
     
     attr_accessor :ability
 
     def initialize ability
       @ability = ability
+      @account = ability.user
     end
 
     def build!
@@ -40,7 +43,6 @@ module Permit
     end    
 
     def make_permit role
-      #inspect!(local_variables,binding)
       begin            
         permit_clazz(role).new(ability, options)
       rescue RuntimeError => e
@@ -55,12 +57,13 @@ module Permit
     end    
     
     def get_permit role
-      #inspect!(local_variables,binding)
       begin            
-        clazz_name = "#{role.to_s.camelize}Permit"
-        clazz_name.constantize
+        find_first_class("#{@account.class}Permits::#{role.to_s.camelize}Permit",
+                         "#{role.to_s.camelize}Permit")
       rescue
-        raise "Permit #{clazz_name} not loaded and thus not defined"
+        raise "Permit for role #{role} not loaded and thus not defined. Try defining
+              #{@account.class}Permits::#{role.to_s.camelize}Permit or
+              #{role.to_s.camelize}Permit"
       end
     end
     

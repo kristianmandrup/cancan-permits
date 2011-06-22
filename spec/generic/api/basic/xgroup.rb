@@ -51,5 +51,31 @@ describe Permits::Ability do
       @ability.can?(:destroy, Post).should be_true
     end
   end
-      
+ 
+  context "Admin Account having admin role" do
+    before do
+      basic_config :admin_account
+    end
+
+    it "should be able to :read anything" do
+      @ability.can?(:read, Comment).should be_true
+      @ability.can?(:read, Post).should be_true      
+    end
+  
+    it "should be not able to :update everything" do
+      @ability.can?(:update, Comment).should be_true
+      @ability.can?(:update, Post).should be_true
+    end
+  
+    it "should be not able to :create everything" do
+      @ability.can?(:create, Comment).should be_true
+      @ability.can?(:create, Post).should be_true      
+    end
+  
+    it "should be not able to :update everything" do
+      @ability.can?(:destroy, Comment).should be_true
+      @ability.can?(:destroy, Post).should be_true
+    end
+  end
+     
 end

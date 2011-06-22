@@ -1,3 +1,5 @@
+
+
 class Comment
   attr_accessor :user_id
 

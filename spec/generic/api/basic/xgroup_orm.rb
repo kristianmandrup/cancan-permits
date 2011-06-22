@@ -18,3 +18,8 @@ def admin_config
   @ability = Permits::Ability.new(@admin)
 end
 
+def admin_account_config
+  @user = User.create(:name => "Kristian")
+  @admin = AdminAccount.create(:user_id => @user.id, :role => 'admin')
+  @ability = Permits::Ability.new(@admin)
+end

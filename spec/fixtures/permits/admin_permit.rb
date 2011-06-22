@@ -6,7 +6,7 @@ class AdminPermit < Permit::Base
   def permit?(user, options = {})    
     super
     return if !role_match? user
-    
+  
     can :manage, :all    
   end  
 end
