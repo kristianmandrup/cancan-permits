@@ -6,7 +6,6 @@ require 'meta_where'
 require 'yaml'
 require 'logger'
 require 'database_cleaner'
-require 'cutter'
 
 module Rails
   def self.config_root_dir
@@ -70,9 +69,8 @@ module Permits::Roles
 end
 
 class User < ActiveRecord::Base  
-  extend ClassRoles
-  include InstanceRoles
-
+  include_and_extend SimpleRoles
+  
   has_many :articles
   has_many :comments
   has_many :posts
@@ -85,7 +83,6 @@ class Account < ActiveRecord::Base
 end
 
 class AdminAccount < Account
-  extend ClassRoles
-  include InstanceRoles
+  include_and_extend SimpleRoles
 end
 

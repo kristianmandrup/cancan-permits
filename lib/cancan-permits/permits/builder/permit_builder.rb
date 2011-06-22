@@ -43,6 +43,7 @@ module Permit
     end    
 
     def make_permit role
+      inspect!(local_variables,binding)
       begin            
         permit_clazz(role).new(ability, options)
       rescue RuntimeError => e

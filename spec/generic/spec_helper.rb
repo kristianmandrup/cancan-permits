@@ -27,9 +27,8 @@ class Guest
 end
 
 class User
-  extend ClassRoles
-  include InstanceRoles
-  
+  include_and_extend SimpleRoles
+
   attr_accessor :id, :role, :name
 
   def initialize id, role, name = nil
@@ -42,9 +41,8 @@ class User
 end
 
 class AdminAccount
-  extend ClassRoles
-  include InstanceRoles
 
+  include_and_extend SimpleRoles
   attr_accessor :user_id, :role
 
   def initialize user_id, role, name = nil
