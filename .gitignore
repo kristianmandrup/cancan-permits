@@ -21,3 +21,5 @@ pkg
 *.orig
 
 ## PROJECT::SPECIFIC
+*.sqlite3
+Gemfile.lock

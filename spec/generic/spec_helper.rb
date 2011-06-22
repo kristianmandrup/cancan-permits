@@ -32,7 +32,7 @@ class User
   def self.roles
     [:guest, :admin, :editor, :super_admin]
   end    
-
+  
   def initialize id, role, name = nil
     self.id = id    
     raise ArgumentError, "Role #{role} is not in list of available roles: #{self.class.roles}" if !self.class.roles.include? role

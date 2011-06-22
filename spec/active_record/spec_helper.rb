@@ -7,6 +7,7 @@ require 'meta_where'
 require 'yaml'
 require 'logger'
 require 'database_cleaner'
+require 'cutter'
 
 module Rails
   def self.config_root_dir
@@ -43,6 +44,8 @@ RSpec.configure do |config|
   config.mock_with :mocha
     
   config.before(:suite) do
+    #DatabaseCleaner.drop_tables ... 
+    migrate
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
     # DatabaseCleaner.clean 
@@ -59,6 +62,7 @@ RSpec.configure do |config|
 end
 
 require_all File.dirname(__FILE__) + '/models/all_models'
+require_all File.dirname(__FILE__) + '/../fixtures/permits'
 
 module Permits::Roles
   def self.available
@@ -67,17 +71,40 @@ module Permits::Roles
 end
 
 class User < ActiveRecord::Base  
+  
   has_many :articles
   has_many :comments
   has_many :posts
+
+  def self.is_role_in_group?(role, group)
+    raise "No group #{group} defined in User model" if !role_groups.has_key?(group)
+    role_groups[group].include?(role) 
+  end
+  
+  def self.role_groups
+    {:bloggers => [:editor]} 
+  end
 
   def self.roles
     [:guest, :admin, :editor]
   end    
   
-  def has_role? role
-    self.role.to_sym == role.to_sym
+  def has_role? rolle
+    role.to_sym == rolle
   end
+
+  def has_any_role? roles
+    roles.include?(role.to_sym)
+  end
+
+  def roles_list
+    [role.to_sym]
+  end
+
+  def is_in_group? group
+    self.class.is_role_in_group?(role,group)
+  end
+
 end
 
 

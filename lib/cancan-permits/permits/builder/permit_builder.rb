@@ -40,10 +40,11 @@ module Permit
     end    
 
     def make_permit role
+      #inspect!(local_variables,binding)
       begin            
         permit_clazz(role).new(ability, options)
       rescue RuntimeError => e
-        raise "Error instantiating Permit instance for #{permit_clazz}, cause #{e}"
+        raise "Error instantiating Permit instance for role #{role}, cause #{e}"
       end
     end                  
     
@@ -54,6 +55,7 @@ module Permit
     end    
     
     def get_permit role
+      #inspect!(local_variables,binding)
       begin            
         clazz_name = "#{role.to_s.camelize}Permit"
         clazz_name.constantize
