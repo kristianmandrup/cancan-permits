@@ -27,12 +27,11 @@ class Guest
 end
 
 class User
+  extend ClassRoles
+  include InstanceRoles
+  
   attr_accessor :id, :role, :name
 
-  def self.roles
-    [:guest, :admin, :editor, :super_admin]
-  end    
-  
   def initialize id, role, name = nil
     self.id = id    
     raise ArgumentError, "Role #{role} is not in list of available roles: #{self.class.roles}" if !self.class.roles.include? role
@@ -40,7 +39,18 @@ class User
     self.name = name || role.to_s
   end
   
-  def has_role? role
-    self.role == role
-  end     
+end
+
+class AdminAccount
+  extend ClassRoles
+  include InstanceRoles
+
+  attr_accessor :user_id, :role
+
+  def initialize user_id, role, name = nil
+    self.user_id = user_id    
+    raise ArgumentError, "Role #{role} is not in list of available roles: #{self.class.roles}" if !self.class.roles.include? role
+    self.role = role
+  end
+
 end
