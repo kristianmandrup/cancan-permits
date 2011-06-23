@@ -62,6 +62,8 @@ end
 require_all File.dirname(__FILE__) + '/models/all_models'
 require_all File.dirname(__FILE__) + '/../fixtures/permits'
 
+require 'simple_roles'
+
 module Permits::Roles
   def self.available
     User.roles

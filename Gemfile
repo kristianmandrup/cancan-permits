@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 group :default do
   gem 'cancan'
   gem 'require_all'
-  gem 'sugar-high'
+  gem 'sugar-high', '~> 0.4.7'
   gem 'rails_artifactor'
   gem 'activemodel'
   gem 'activesupport'
