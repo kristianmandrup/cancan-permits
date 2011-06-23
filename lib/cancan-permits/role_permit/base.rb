@@ -23,8 +23,8 @@ module RolePermit
     # Normally super for #permit? should not be called except for this case, 
     # or if subclassing another Permit than Permit::Base
     #
-    def permit? user, options = {}   
-      role_match?(user) && options == :in_role
+    def permit? user_account, options = {}   
+      role_match?(user_account) && options == :in_role
     end
   end
 end

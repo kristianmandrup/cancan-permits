@@ -8,10 +8,10 @@ module Permit
       rules << rule_class.new(false, action, subject, conditions, block)
     end
 
-    def owns(user, clazz, ownership_relation = :user_id, user_id_attribute = :id, strategy_used = nil)
+    def owns(user_account, clazz, ownership_relation = :user_id, user_id_attribute = :id, strategy_used = nil)
       begin   
         strategy_used = strategy_used || self.strategy
-        user_id = user.send :"#{user_id_attribute}"              
+        user_id = user_account.send :"#{user_id_attribute}"              
       rescue
         raise ArgumentError, "ERROR (owns) - The user of class #{user.class} does not respond to ##{user_id_attribute}"
       end        

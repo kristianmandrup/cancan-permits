@@ -1,8 +1,8 @@
 module Permit
   module Loaders
-    def load_rules user
+    def load_rules user_account
       load_role_rules
-      load_user_rules user
+      load_user_rules user_account
       load_groups_rules
       #load_categories
     end
@@ -43,11 +43,11 @@ module Permit
       # retrieve from Rails cache
     end
 
-    def load_user_rules user 
+    def load_user_rules user_account 
       return if !user_permissions || user_permissions.permissions.empty?
-      raise "#load_user_rules expects the user to have an email property: #{user.inspect}" if !user || !user.respond_to?(:email) 
+      raise "#load_user_rules expects the user to have an email property: #{user_account.inspect}" if !user_account || !user_account.respond_to?(:email) 
 
-      id = user.email
+      id = user_account.email
       return nil if id.strip.empty? || user_permissions.permissions[id].nil?
 
       user_permissions.permissions[id].can_eval do |permission_statement|

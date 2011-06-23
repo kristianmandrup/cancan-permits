@@ -9,20 +9,20 @@ module Permit
 
       # only execute the permit if the user has the role of the permit or is for any role      
       def role_execution
-        permit?(user, options) if permit_for_user_role? || permit_for_user_group?
+        permit?(user_account, options) if permit_for_user_role? || permit_for_user_group?
       end
 
       def permit_for_user_role? 
-        user.has_role?(role) || role == :any
+        user_account.has_role?(role) || role == :any
       end
 
       def role_group_execution
         # could also use #user.is_member_of?
-        permit?(user, options) if permit_for_user_group?
+        permit?(user_account, options) if permit_for_user_group?
       end
     
       def permit_for_user_group? 
-        user.is_in_group?(role)
+        user_account.is_in_group?(role)
       end    
     
       protected

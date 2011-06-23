@@ -8,8 +8,8 @@ module License
       permit.cannot action, subject, conditions, &block
     end
 
-    def owns(user, clazz, ownership_relation = :user_id, user_id_attribute = :id)
-      permit.owns user, clazz, ownership_relation, user_id_attribute
+    def owns(user_account, clazz, ownership_relation = :user_id, user_id_attribute = :id)
+      permit.owns user_account, clazz, ownership_relation, user_id_attribute
     end
   end
 end

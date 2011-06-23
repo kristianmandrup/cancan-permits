@@ -15,8 +15,8 @@ module Permit
     end
        
     # executes the permit
-    def execute user, options
-      executor(user, options).execute!
+    def execute user_account, options
+      executor(user_account, options).execute!
     end
 
     def rules
@@ -38,7 +38,7 @@ module Permit
     # Normally super for #permit? should not be called except for this case, 
     # or if subclassing another Permit than Permit::Base
     #
-    def permit? user, options = {}   
+    def permit? user_account, options = {}   
       false
     end
 
@@ -87,17 +87,17 @@ module Permit
 
     include Permit::RoleMatcher
 
-    def any_role_match? user
-      role_match?(user) || role_group_match?(user)
+    def any_role_match? user_account
+      role_match?(user_account) || role_group_match?(user_account)
     end
 
     # return the executor used to execute the permit
-    def executor(user, options = {}) 
+    def executor(user_account, options = {}) 
       @executor ||= case self.class.name
       when /System/
-        then Permit::Executor::System.new self, user, options
+        then Permit::Executor::System.new self, user_account, options
       else  
-        Permit::Executor::Base.new self, user, options
+        Permit::Executor::Base.new self, user_account, options
       end
     end
     

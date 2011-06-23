@@ -3,7 +3,7 @@ module Permit
     class System < Abstract 
       # always execute system permit
       def execute!
-        permit?(user, options)
+        permit?(user_account, options)
       end
     end
   end
