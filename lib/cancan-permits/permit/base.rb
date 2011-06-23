@@ -1,5 +1,4 @@
 require 'sugar-high/array'
-require_all File.dirname(__FILE__)
 
 # The permit base class for both Role Permits and Role Group Permits
 # Should contain all common logic
@@ -18,6 +17,10 @@ module Permit
     # executes the permit
     def execute user, options
       executor(user, options).execute!
+    end
+
+    def rules
+      ability.send :rules
     end
 
     # In a specific Role based Permit you can use 
@@ -91,11 +94,11 @@ module Permit
     # return the executor used to execute the permit
     def executor(user, options = {}) 
       @executor ||= case self.class.name
-                    when /System/
-                      then Permit::SystemExecutor.new self, user, options
-                    else  
-                      Permit::BaseExecutor.new self, user, options
-                    end
+      when /System/
+        then Permit::Executor::System.new self, user, options
+      else  
+        Permit::Executor::Base.new self, user, options
+      end
     end
     
     include Permit::Util

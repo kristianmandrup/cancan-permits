@@ -1,17 +1,16 @@
 require 'sugar-high/array'
-require_all File.dirname(__FILE__)
 
-module RoleGroupPermit
-  class Base  < Permit::Base           
-
+module RolePermit
+  class Base < Permit::Base
     # creates the permit
     def initialize ability, options = {}
       super
     end
        
+
     # In a specific Role based Permit you can use 
     #   def permit? user, options = {}
-    #     return if !super(user, :in_group)
+    #     return if !super(user, :in_role)
     #     ... permission logic follows
     #
     # This will call the Permit::Base#permit? instance method (the method below)
@@ -25,7 +24,7 @@ module RoleGroupPermit
     # or if subclassing another Permit than Permit::Base
     #
     def permit? user, options = {}   
-      role_group_match?(user) && options == :in_group
+      role_match?(user) && options == :in_role
     end
   end
 end

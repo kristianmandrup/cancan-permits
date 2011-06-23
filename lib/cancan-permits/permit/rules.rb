@@ -16,7 +16,6 @@ module Permit
         raise ArgumentError, "ERROR (owns) - The user of class #{user.class} does not respond to ##{user_id_attribute}"
       end        
       # puts "can #{clazz} manage ownership: #{ownership_relation.inspect} => #{user_id.inspect} ???" 
-      # puts "Using strategy: #{strategy_used}"
       begin
         case strategy_used
         when :string

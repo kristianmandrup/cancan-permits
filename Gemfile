@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 group :default do
   gem 'cancan'
-  gem 'require_all'
   gem 'sugar-high', '~> 0.4.7'
   gem 'rails_artifactor'
   gem 'activemodel'
@@ -17,6 +16,7 @@ group :default do
 end
 
 group :development, :test do
+  gem 'require_all'
   gem "rspec"
   gem 'code-spec'
   gem 'rails-app-spec'

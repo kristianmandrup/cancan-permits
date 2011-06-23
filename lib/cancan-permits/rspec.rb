@@ -1,1 +1,1 @@
-require_all File.dirname(__FILE__) + '/rspec'
+require 'cancan-permits/rspec/config'

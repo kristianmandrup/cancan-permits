@@ -1,10 +1,12 @@
 require 'cancan-permits/permit/util'
-require_all File.dirname(__FILE__) + '/builder'
 
 module Permits
   class Ability    
-    include CanCan::Ability
+    autoload :ClassMethods,   'cancan-permits/permits/ability/class_methods'
 
+    include CanCan::Ability
+    extend ClassMethods
+    
     attr_reader :options, :user_account
 
     # put ability logic here! 
@@ -18,7 +20,7 @@ module Permits
       # run permit executors
       permits.each do |permit|
       #  # execute the permit and break only if the execution returns the special :break symbol
-        puts "Permit is: #{permit}"
+        # puts "Permit is: #{permit}"
         break if permit.execute(user_account, options) == :break
       end
     end      

@@ -22,8 +22,6 @@ module Permits
       def relations_orms
         [:active_record, :generic]
       end
-    end
-    
-    extend ClassMethods
+    end    
   end
 end

@@ -1,7 +1,9 @@
 module Permits
   class Configuration
+    autoload :Categories,     'cancan-permits/permits/configuration/categories'
+    autoload :Permissions,    'cancan-permits/permits/configuration/permissions'    
+    
     mattr_accessor :localhost_manager
-
     mattr_accessor :special_permits
     
     def self.special_permits

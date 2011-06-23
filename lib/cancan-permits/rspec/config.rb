@@ -1,7 +1,6 @@
-require 'rspec/core'
+require 'rspec'
 require 'code-spec'
-
-require_all File.dirname(__FILE__) + '/matchers'    
+require 'cancan-permits/rspec/matchers'    
 
 RSpec.configure do |config|
   config.include RSpec::RubyContentMatchers::License
